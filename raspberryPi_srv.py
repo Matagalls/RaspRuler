@@ -28,6 +28,7 @@ import socket
 import logging
 import sys
 import os
+import subprocess
 
 VERSION = "0.0.1"
 PORT = 3658
@@ -37,11 +38,22 @@ COMMANDS = {"free_space_disk","quit"}
 
 class rasp_srv():
 
-    def __init__(self):
+    def __init__(self, no_bucle):
 
-        # Socket related stuff              
+        # Socket related stuff   
+        self.info = {"os": "", 
+                    "cpu": "",
+                    "ram_total": "",
+                    "ram_used": "",
+                    "ram_free": "",
+                    "amule_installed": "",
+                    "torrent_installed": "",
+                    "git_installed": "",
+                    "owncloud_installed": "",
+                    }           
 
-        self.wait()
+        if not no_bucle:
+            self.wait()
 
     def wait(self):
 
@@ -79,18 +91,60 @@ class rasp_srv():
             self.auxSocket.close()
 
 
+    def getRamInfo(self):
+        """ Get structural and dynamical info about Ram memory. """
+    
+        def cleanMemoString(memo_to_clean):
+            """ Clean string """
+            name, amount, aux_b = "", "", False
+            unpacked = memo_to_clean.split(" ")
+            for value in unpacked:
+                if aux_b:
+                    aux_b = False
+                    if value[len(value) - 1:] == "\n":
+                        name = value[:len(value) - 1]
+                    else:
+                        name = value
+
+                if value[len(value) - 1:] == "k":
+                    amount = value[:len(value) - 1]
+                    aux_b = True
+            
+            return name, amount
+
+        p = subprocess.Popen('top -b -n 1 | grep Mem', shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        mem_line = p.stdout.readlines()[0]
+        aux = mem_line.split(":")
+        memories = aux[1].split(",")
+        for memo in memories:
+            name, amount = cleanMemoString(memo)
+            if name == "total":
+                self.info["ram_total"] = amount
+            elif name == "used":
+                self.info["ram_used"] = amount
+            elif name == "free":
+                self.info["ram_free"] = amount
+
+
+
+    def getMachineName(self):
+        p = subprocess.Popen('uname -m', shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        return p.stdout.readlines() # list!!!!!
+
+    def getOsName(self):
+        p = subprocess.Popen('uname -s', shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        return p.stdout.readlines()# list!!!!!
+
     def getAvailableHdSpace():
         """ Return all the available space in the HD, in Kb. """
         stats = os.statvfs('/')
         return str(stats[statvfs.F_BSIZE] * stats[statvfs.F_BAVAIL] / 1024)
-
     
-    def getFreeHdSpace(self):
+    def getFreeHdSpace():
         """ Return the free space in the HD, in Kb. """
         s = os.statvfs('/')
         a = (s.f_bavail * s.f_frsize) / 1024 # Kb
         return str(a)
-
 
     def isAmuleInstalled():
         """ Check if amule is installed """
@@ -99,13 +153,35 @@ class rasp_srv():
         else:
             return False
 
-
-    def isTransmissionInstalled():
+    def isTorrentInstalled():
         """ Check if transmission is installed """
         if os.path.isfile("/etc/init-d/transmission-daemon"):
             return True
         else:
             return False
+
+    def isGitInstalled():
+        return "no_implemented"
+
+    def isOwncloudInstalled():
+        return "no_implemented"
+
+
+    def getStructuralInfo(self):
+        """ Recopile all the info that not will change while the server
+            is being executed. """
+
+        self.info["amule_installed"] = self.isAmuleInstalled()
+        self.info["torrent_installed"] = self.isTorrentInstalled()
+        self.info["git_installed"] = self.isGitInstalled()
+        self.info["owncloud_installed"] = self.isOwncloudInstalled()
+
+        self.info["cpu"] = self.getMachineName()
+        self.info["os"] = self.getOsName()
+        self.getRamInfo()
+    
+            
+
 
 
     #def doBackUp
@@ -121,5 +197,12 @@ if __name__ == "__main__":
         logging.info('Logger iniciat amb nivell DEBUG')
     else:
         logging.basicConfig(format='%(levelname)s:%(message)s')
-    server = rasp_srv()
+
+    if len(parametres & {"-n", "--no-bucle"}) > 0:   
+        logging.basicConfig(format='%(levelname)s:%(message)s')
+        no_bucle = True
+    else:
+        no_bucle = False
+
+    server = rasp_srv(no_bucle)
 

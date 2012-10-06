@@ -28,7 +28,19 @@ import pygtk
 pygtk.require("2.0")
 import gtk
 
+import RaspberryPi_cln as RpBy
+
 class MainWindow:
+
+
+    def init_connection(self):
+        """ Try to set a connection with the RpBy server. """
+
+        self.client = RpBy.rasp_cln()
+
+
+
+
 
 
     def get_main_menu(self, window):
@@ -45,11 +57,11 @@ class MainWindow:
 
     
     def __init__(self):
-    
+
         self.main_win = gtk.Window(gtk.WINDOW_TOPLEVEL)
         self.main_win.set_title("RaspRuler")   
         self.main_win.set_position(gtk.WIN_POS_CENTER)
-        self.main_win.set_size_request(400, 300)     
+        self.main_win.set_size_request(500, 400)     
         self.main_win.connect("destroy", self.on_quit)
         self.main_win.set_border_width(10)
         
@@ -60,6 +72,7 @@ class MainWindow:
         self.menu_items = (
             ("/File", None, None, 0, "<Branch>"),
             ("/File/Start connection", None, None, 0, None),
+            ("/File/Exit", None, self.on_quit, 0, None),
             ("/Help", None, None, 0, "<Branch>"),
             ("/Help/About RaspRuler", None, None, 0, None),
             )            
@@ -78,10 +91,10 @@ class MainWindow:
 
         ##### Slide page about state of the raspberry
 
-        self.table_general_info = gtk.Table(2, 1, True)
+        self.table_general_info = gtk.Table(3, 1, False)
 
         # Hardware frame
-        self.frame_hardware_info = gtk.Frame("General Hardware Info")
+        self.frame_hardware_info = gtk.Frame("General Hardware Information")
 
         self.table_hardware_info = gtk.Table(2, 2, False)
 
@@ -100,9 +113,9 @@ class MainWindow:
 
         # Software frame
 
-        self.frame_software_info = gtk.Frame("General Software Info")
+        self.frame_software_info = gtk.Frame("General Software Information")
 
-        self.table_software_info = gtk.Table(1, 2, False)
+        self.table_software_info = gtk.Table(1, 1, False)
 
         self.label_OS_title = gtk.Label("Operating system:")
         self.label_OS_value = gtk.Label("Debian Raspberry Pi Edition")
@@ -113,7 +126,25 @@ class MainWindow:
         self.frame_software_info.add(self.table_software_info)
         self.table_general_info.attach(self.frame_software_info, 0, 1, 1, 2, xoptions=gtk.FILL, yoptions=gtk.FILL, xpadding=6, ypadding=6)
 
-        self.label_title_slide_info = gtk.Label("Info")
+
+        # Connection frame
+
+        self.frame_connection_info = gtk.Frame("Connection with the server")
+
+        self.table_connection_info = gtk.Table(1, 1, False)
+
+        self.label_connection_title = gtk.Label("Connection:")
+        self.label_connection_value = gtk.Label("Available")
+
+        self.table_connection_info.attach(self.label_connection_title, 0, 1, 0, 1, xoptions=gtk.FILL, yoptions=gtk.FILL, xpadding=6, ypadding=6)
+        self.table_connection_info.attach(self.label_connection_value, 1, 2, 0, 1, xoptions=gtk.FILL, yoptions=gtk.FILL, xpadding=6, ypadding=6)
+
+        self.frame_connection_info.add(self.table_connection_info)
+        self.table_general_info.attach(self.frame_connection_info, 0, 1, 2, 3, xoptions=gtk.FILL, yoptions=gtk.FILL, xpadding=6, ypadding=6)
+
+
+
+        self.label_title_slide_info = gtk.Label("General information")
         self.notebook.append_page(self.table_general_info, self.label_title_slide_info)
 
 
@@ -182,7 +213,7 @@ class MainWindow:
     
     
     # Ahora se define el método "on_quit" que destruye la aplicación
-    def on_quit(self, widget):
+    def on_quit(self, widget, data=None):
         gtk.main_quit()
 
 
