@@ -27,6 +27,11 @@
 import socket
 import logging
 import sys
+import pickle
+
+import constants as K
+
+COMMANDS = K.COMMANDS
 
 VERSION = "0.0.1"
 PORT = 3658
@@ -36,14 +41,70 @@ class rasp_cln():
 
     def __init__(self):
 
-        # Connection stuff
+        self.connection = False
+
+        self.setConnection()
+
+
+    def closeConnection(self):
+        logging.debug("Closing connected")
+        self.socket.close()  
+
+
+    def setConnection(self):
+        """ Create connection """
         self.socket = socket.socket()  # Not safe
-        self.socket.connect(("localhost", PORT))
+        try:
+            self.socket.connect(("localhost", PORT))
+            self.connection = True
+            logging.debug("Connection established")
+        except:
+            self.connection = False
+            logging.warning("Can't found server. Connection not established")
+
         self.socket.settimeout(TIMEOUT)
 
-        # Data 
+    
+    def getStruturalInfo(self):
+        """ Request all the structural info """
 
-        self.bucle()
+        struct_info = self.senderAndReciverManager("get_structural_info")
+
+        if struct_info is not False:
+            dict_struct_info = K.unserializeDict(struct_info)
+            return dict_struct_info
+
+        else:
+            logging.warning("Error unpackint dict_struct")
+            return False
+
+    
+    def senderAndReciverManager(self, command):
+        """ Manage sending petitions over the socket and reading them.
+            Return what server send if all the process succeed, and False
+            if something had gone wrong. """
+
+        if self.connection:
+            if command in COMMANDS:
+                self.socket.send("get_structural_info")
+                answer = self.socket.recv(1000)
+
+                if answer is not None:
+                    if answer == K.UNKNOWN_COMMAND:
+                        logging.warning("Server can't understant last command: %s", command)
+                        return False
+                    else:
+                        return answer
+                else:
+                    logging.warning("Recived empty answer from command: %s", command)
+                    return False                
+
+            else:
+                logging.warning('Not sending unknown command: %s. Ingnoring', command)
+                return False
+        else:
+            logging.warning("No connection established")
+            return False
 
 
     def bucle(self):
@@ -70,14 +131,6 @@ class rasp_cln():
 
 
 if __name__ == "__main__":
-
-    parametres = set(sys.argv[1:])
-
-    if len(parametres & {"-d", "-debug", "--debug"}) > 0:   
-        logging.basicConfig(level=logging.DEBUG, format='%(levelname)s:%(message)s')
-        logging.info('Logger iniciat amb nivell DEBUG')
-    else:
-        logging.basicConfig(format='%(levelname)s:%(message)s')
 
     client = rasp_cln()
         

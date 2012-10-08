@@ -27,20 +27,37 @@
 import pygtk
 pygtk.require("2.0")
 import gtk
+import sys
+import logging
 
 import RaspberryPi_cln as RpBy
+import constants as K
+
+EMPTY = " -- "
 
 class MainWindow:
 
 
-    def init_connection(self):
+    def completeInformation(self):
+        """ With the GUI created, filling it with data. """
+        self.setStructuralInfo()
+
+
+    def initConnectionWithClient(self):
         """ Try to set a connection with the RpBy server. """
 
         self.client = RpBy.rasp_cln()
 
 
+    def setStructuralInfo(self):
+        """ Set all the structural info coming from the server. """
+        
+        dict_struct_info = self.client.getStruturalInfo()
 
+        self.label_OS_value.set_text(dict_struct_info["os"])
+        self.label_cpu_value.set_text(dict_struct_info["cpu"])
 
+        self.label_ram_value.set_text(K.memoryResizer(dict_struct_info["ram_total"]))
 
 
     def get_main_menu(self, window):
@@ -58,6 +75,8 @@ class MainWindow:
     
     def __init__(self):
 
+        self.initConnectionWithClient()
+
         self.main_win = gtk.Window(gtk.WINDOW_TOPLEVEL)
         self.main_win.set_title("RaspRuler")   
         self.main_win.set_position(gtk.WIN_POS_CENTER)
@@ -72,6 +91,8 @@ class MainWindow:
         self.menu_items = (
             ("/File", None, None, 0, "<Branch>"),
             ("/File/Start connection", None, None, 0, None),
+            ("/File/Close connection", None, None, 0, None),
+            ("/File/Restart connection", None, None, 0, None),
             ("/File/Exit", None, self.on_quit, 0, None),
             ("/Help", None, None, 0, "<Branch>"),
             ("/Help/About RaspRuler", None, None, 0, None),
@@ -98,10 +119,10 @@ class MainWindow:
 
         self.table_hardware_info = gtk.Table(2, 2, False)
 
-        self.label_ram_title = gtk.Label("RAM memory :")
-        self.label_ram_value = gtk.Label("256 Mb")
+        self.label_ram_title = gtk.Label("RAM memory installed:")
+        self.label_ram_value = gtk.Label(EMPTY)
         self.label_cpu_title = gtk.Label("CPU :")
-        self.label_cpu_value = gtk.Label("??")
+        self.label_cpu_value = gtk.Label(EMPTY)
 
         self.table_hardware_info.attach(self.label_ram_title, 0, 1, 0, 1, xoptions=gtk.FILL, yoptions=gtk.FILL, xpadding=6, ypadding=6)
         self.table_hardware_info.attach(self.label_ram_value, 1, 2, 0, 1, xoptions=gtk.FILL, yoptions=gtk.FILL, xpadding=6, ypadding=6)
@@ -118,7 +139,7 @@ class MainWindow:
         self.table_software_info = gtk.Table(1, 1, False)
 
         self.label_OS_title = gtk.Label("Operating system:")
-        self.label_OS_value = gtk.Label("Debian Raspberry Pi Edition")
+        self.label_OS_value = gtk.Label(EMPTY)
 
         self.table_software_info.attach(self.label_OS_title, 0, 1, 0, 1, xoptions=gtk.FILL, yoptions=gtk.FILL, xpadding=6, ypadding=6)
         self.table_software_info.attach(self.label_OS_value, 1, 2, 0, 1, xoptions=gtk.FILL, yoptions=gtk.FILL, xpadding=6, ypadding=6)
@@ -134,7 +155,11 @@ class MainWindow:
         self.table_connection_info = gtk.Table(1, 1, False)
 
         self.label_connection_title = gtk.Label("Connection:")
-        self.label_connection_value = gtk.Label("Available")
+
+        if self.client.connection:
+            self.label_connection_value = gtk.Label("Connected")
+        else:   
+            self.label_connection_value = gtk.Label("Not Connected")
 
         self.table_connection_info.attach(self.label_connection_title, 0, 1, 0, 1, xoptions=gtk.FILL, yoptions=gtk.FILL, xpadding=6, ypadding=6)
         self.table_connection_info.attach(self.label_connection_value, 1, 2, 0, 1, xoptions=gtk.FILL, yoptions=gtk.FILL, xpadding=6, ypadding=6)
@@ -155,8 +180,8 @@ class MainWindow:
 
         # Amule
         self.label_amule_title = gtk.Label("Amule")
-        self.label_amule_installed = gtk.Label(" -- ")
-        self.label_amule_running = gtk.Label(" -- ")
+        self.label_amule_installed = gtk.Label(EMPTY)
+        self.label_amule_running = gtk.Label(EMPTY)
         self.button_amule_disable = gtk.Button("Disable")
         self.button_amule_launch_website = gtk.Button("Launch Website")
 
@@ -168,8 +193,8 @@ class MainWindow:
 
         # Torrent
         self.label_torrent_title = gtk.Label("uTorrent")
-        self.label_torrent_installed = gtk.Label(" -- ")
-        self.label_torrent_running = gtk.Label(" -- ")
+        self.label_torrent_installed = gtk.Label(EMPTY)
+        self.label_torrent_running = gtk.Label(EMPTY)
         self.button_torrent_disable = gtk.Button("Disable")
         self.button_torrent_launch_website = gtk.Button("Launch Website")
 
@@ -181,8 +206,8 @@ class MainWindow:
 
         # apache / owncloud
         self.label_owncloud_title = gtk.Label("owncloud")
-        self.label_owncloud_installed = gtk.Label(" -- ")
-        self.label_owncloud_running = gtk.Label(" -- ")
+        self.label_owncloud_installed = gtk.Label(EMPTY)
+        self.label_owncloud_running = gtk.Label(EMPTY)
         self.button_owncloud_disable = gtk.Button("Disable")
         self.button_owncloud_launch_website = gtk.Button("Launch Website")
 
@@ -194,7 +219,7 @@ class MainWindow:
 
         # git
         self.label_git_title = gtk.Label("git")
-        self.label_git_installed = gtk.Label(" -- ")
+        self.label_git_installed = gtk.Label(EMPTY)
 
         self.table_services.attach(self.label_git_title,           0, 1, 3, 4, xoptions=gtk.FILL, yoptions=gtk.FILL, xpadding=6, ypadding=6)
         self.table_services.attach(self.label_git_installed,       1, 2, 3, 4, xoptions=gtk.FILL, yoptions=gtk.FILL, xpadding=6, ypadding=6)
@@ -211,9 +236,15 @@ class MainWindow:
         self.main_win.show_all()
 
     
+        self.completeInformation()
     
+
     # Ahora se define el método "on_quit" que destruye la aplicación
     def on_quit(self, widget, data=None):
+
+        if self.client.connection:
+            self.client.closeConnection()
+
         gtk.main_quit()
 
 
@@ -223,5 +254,14 @@ class MainWindow:
 
 
 if __name__ == "__main__":
+
+    parametres = set(sys.argv[1:])
+
+    if len(parametres & {"-d", "-debug", "--debug"}) > 0:   
+        logging.basicConfig(level=logging.DEBUG, format='%(levelname)s:%(message)s')
+        logging.info('Logger iniciat amb nivell DEBUG')
+    else:
+        logging.basicConfig(format='%(levelname)s:%(message)s')
+
     MainWindow()
     gtk.main()

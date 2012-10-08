@@ -29,12 +29,15 @@ import logging
 import sys
 import os
 import subprocess
+import pickle
+
+import constants as K
 
 VERSION = "0.0.1"
 PORT = 3658
 MAX_USERS = 1
 
-COMMANDS = {"free_space_disk","quit"}
+COMMANDS = K.COMMANDS
 
 class rasp_srv():
 
@@ -70,12 +73,17 @@ class rasp_srv():
             self.clientPort = clientInfo[1]
             logging.info('Client from %s connected and accepted.', self.clientAddress)
 
-            while 1:
+            socket_alive = True
+            while socket_alive:
                 command = self.socketClient.recv(1000)
                 if command in COMMANDS:
 
                     if command == "free_space_disk":
                         answer = self.getFreeHdSpace()
+
+                    elif command == "get_structural_info":
+                        self.getStructuralInfo()
+                        answer = K.serializeDict(self.info)
 
                     elif command == "quit":
                         break 
@@ -84,7 +92,11 @@ class rasp_srv():
                     answer = "Unknown_command"
                     logging.warning('Recived unknown command: %s. Ingnoring', command)
 
-                self.socketClient.send(answer)                
+                try:
+                    self.socketClient.send(answer)
+                except:
+                    logging.warning('Socket died')
+                    socket_alive = False               
 
             logging.info('Closing sockets with %s', self.clientAddress)
             self.socketClient.close()
@@ -129,41 +141,45 @@ class rasp_srv():
 
     def getMachineName(self):
         p = subprocess.Popen('uname -m', shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-        return p.stdout.readlines() # list!!!!!
+        answer = p.stdout.readlines()[0]
+        answer = answer[:len(answer) - 1]
+        return answer
 
     def getOsName(self):
         p = subprocess.Popen('uname -s', shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-        return p.stdout.readlines()# list!!!!!
+        answer = p.stdout.readlines()[0]
+        answer = answer[:len(answer) - 1]
+        return answer
 
-    def getAvailableHdSpace():
+    def getAvailableHdSpace(self):
         """ Return all the available space in the HD, in Kb. """
         stats = os.statvfs('/')
         return str(stats[statvfs.F_BSIZE] * stats[statvfs.F_BAVAIL] / 1024)
     
-    def getFreeHdSpace():
+    def getFreeHdSpace(self):
         """ Return the free space in the HD, in Kb. """
         s = os.statvfs('/')
         a = (s.f_bavail * s.f_frsize) / 1024 # Kb
         return str(a)
 
-    def isAmuleInstalled():
+    def isAmuleInstalled(self):
         """ Check if amule is installed """
         if os.path.isfile("/etc/init-d/amule-daemon"):
             return True
         else:
             return False
 
-    def isTorrentInstalled():
+    def isTorrentInstalled(self):
         """ Check if transmission is installed """
         if os.path.isfile("/etc/init-d/transmission-daemon"):
             return True
         else:
             return False
 
-    def isGitInstalled():
+    def isGitInstalled(self):
         return "no_implemented"
 
-    def isOwncloudInstalled():
+    def isOwncloudInstalled(self):
         return "no_implemented"
 
 
@@ -175,7 +191,6 @@ class rasp_srv():
         self.info["torrent_installed"] = self.isTorrentInstalled()
         self.info["git_installed"] = self.isGitInstalled()
         self.info["owncloud_installed"] = self.isOwncloudInstalled()
-
         self.info["cpu"] = self.getMachineName()
         self.info["os"] = self.getOsName()
         self.getRamInfo()
