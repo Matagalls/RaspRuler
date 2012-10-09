@@ -29,12 +29,10 @@ import logging
 import sys
 import os
 import subprocess
-import pickle
 
 import constants as K
 
 VERSION = "0.0.1"
-PORT = 3658
 MAX_USERS = 1
 
 COMMANDS = K.COMMANDS
@@ -64,7 +62,7 @@ class rasp_srv():
 
             self.auxSocket = socket.socket()
             self.auxSocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-            self.auxSocket.bind(("localhost", PORT))
+            self.auxSocket.bind(("localhost", K.PORT))
             logging.info('Waiting for clinets to connect ...')
             self.auxSocket.listen(MAX_USERS)
 
@@ -87,6 +85,7 @@ class rasp_srv():
 
                     elif command == "quit":
                         break 
+                    logging.info('Asked for %s command', command)
 
                 else:
                     answer = "Unknown_command"

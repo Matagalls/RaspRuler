@@ -27,14 +27,12 @@
 import socket
 import logging
 import sys
-import pickle
 
 import constants as K
 
 COMMANDS = K.COMMANDS
 
 VERSION = "0.0.1"
-PORT = 3658
 TIMEOUT = 2
 
 class rasp_cln():
@@ -47,35 +45,41 @@ class rasp_cln():
 
 
     def closeConnection(self):
-        logging.debug("Closing connected")
+        logging.debug("Closing connection")
         self.socket.close()  
 
 
     def setConnection(self):
         """ Create connection """
-        self.socket = socket.socket()  # Not safe
-        try:
-            self.socket.connect(("localhost", PORT))
-            self.connection = True
-            logging.debug("Connection established")
-        except:
-            self.connection = False
-            logging.warning("Can't found server. Connection not established")
+        self.socket = socket.socket()
+        if self.connection is not True:
+            try:
+                self.socket.connect(("localhost", K.PORT))
+                self.connection = True
+                logging.debug("Connection established")
+            except:
+                self.connection = False
+                logging.warning("Can't found server. Connection not established")
+                self.socket.close()
 
-        self.socket.settimeout(TIMEOUT)
+            self.socket.settimeout(TIMEOUT)
+        else:
+            logging.info("Connection already set. Ignoring ... ")
 
     
     def getStruturalInfo(self):
         """ Request all the structural info """
 
-        struct_info = self.senderAndReciverManager("get_structural_info")
+        if self.connection:
+            struct_info = self.senderAndReciverManager("get_structural_info")
+            if struct_info is not False:
+                dict_struct_info = K.unserializeDict(struct_info)
+                return dict_struct_info
 
-        if struct_info is not False:
-            dict_struct_info = K.unserializeDict(struct_info)
-            return dict_struct_info
-
+            else:
+                logging.warning("Error unpackint dict_struct")
+                return False
         else:
-            logging.warning("Error unpackint dict_struct")
             return False
 
     
@@ -97,37 +101,13 @@ class rasp_cln():
                         return answer
                 else:
                     logging.warning("Recived empty answer from command: %s", command)
-                    return False                
-
+                    return False
             else:
                 logging.warning('Not sending unknown command: %s. Ingnoring', command)
                 return False
         else:
             logging.warning("No connection established")
             return False
-
-
-    def bucle(self):
-
-        while 1:
-            mensaje = raw_input("-> ")
-            self.socket.send(mensaje)
-
-            answer = self.socket.recv(1000)
-            
-            if answer is not None:
-                if answer == "Unknown_command":
-                    logging.warning("Server can't understant last command")
-                else:
-                    print answer
-            else:
-                logging.warning('Recived empty answer')
-
-            if mensaje == "quit":
-                break 
-       
-        self.socket.close()  
-
 
 
 if __name__ == "__main__":

@@ -29,7 +29,7 @@
 import ast
 
 VERSION = "0.0.1"
-
+PORT = 3658
 # All the commands between the client and the server.
 COMMANDS = {"free_space_disk","quit","get_structural_info"}
 
@@ -39,31 +39,12 @@ UNKNOWN_COMMAND = "Unknown_command"
 def serializeDict(dictionary):
     """ Convert a dict into a string to be send through a socket. """
     dict_serialized = ""
-
-#    print dictionary
-
-#    for tag, element in dictionary:
-#        dict_serialized = dict_serialized + str(tag) + "=" + str(element) + "/"
-
-    
-
-#    return dict_serialized[:len(dict_serialized) - 1]
-
     return str(dictionary)
 
 
 
 def unserializeDict(string):
     """ Convert a dict into a string to be send through a socket. """
-
-
-#    list_aux = string.split("/")
-#    for member in list_aux:
-#        tag, element = member.split("=")
-#        dict_unserialized[tag] = element
-
-#    return dict_unserialized
-
     return ast.literal_eval(string)
 
 
@@ -71,7 +52,6 @@ def memoryResizer(memory):
     """ Adjust memory size in the correct units. Memory parameter in Kbytes. """
 
     memory = int(memory)
-
     if memory / 1024 > 1:
         memory = memory / 1024
         units = "Mb"
@@ -83,10 +63,18 @@ def memoryResizer(memory):
         units = "Kb"
 
     return str(memory) + " " + units
-
-
 # NO DECIMALS!!!!!!!!!!!!!!!
 
+
+def strBoolean(bool_value):
+    """ Convert a boolean value into a string in order to put it in a label. """
+
+    if bool_value is True:
+        return "Yes"
+    elif bool_value is False:
+        return "No"
+    else:
+        return "not_implemented"
 
 
 

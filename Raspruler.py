@@ -34,6 +34,8 @@ import RaspberryPi_cln as RpBy
 import constants as K
 
 EMPTY = " -- "
+NO = "NO"
+YES = "YES"
 
 class MainWindow:
 
@@ -56,8 +58,12 @@ class MainWindow:
 
         self.label_OS_value.set_text(dict_struct_info["os"])
         self.label_cpu_value.set_text(dict_struct_info["cpu"])
-
         self.label_ram_value.set_text(K.memoryResizer(dict_struct_info["ram_total"]))
+
+        self.label_amule_installed.set_text(K.strBoolean(dict_struct_info["amule_installed"]))
+        self.label_torrent_installed.set_text(K.strBoolean(dict_struct_info["torrent_installed"]))
+        self.label_git_installed.set_text(K.strBoolean(dict_struct_info["git_installed"]))
+        self.label_owncloud_installed.set_text(K.strBoolean(dict_struct_info["owncloud_installed"]))
 
 
     def get_main_menu(self, window):
@@ -176,46 +182,40 @@ class MainWindow:
 
         ##### Slide page about services
         self.frame_services = gtk.Frame("Services overview")
-        self.table_services = gtk.Table(4, 5, False)
+        self.table_services = gtk.Table(4, 4, False)
 
         # Amule
         self.label_amule_title = gtk.Label("Amule")
         self.label_amule_installed = gtk.Label(EMPTY)
         self.label_amule_running = gtk.Label(EMPTY)
-        self.button_amule_disable = gtk.Button("Disable")
         self.button_amule_launch_website = gtk.Button("Launch Website")
 
         self.table_services.attach(self.label_amule_title,           0, 1, 0, 1, xoptions=gtk.FILL, yoptions=gtk.FILL, xpadding=6, ypadding=6)
         self.table_services.attach(self.label_amule_installed,       1, 2, 0, 1, xoptions=gtk.FILL, yoptions=gtk.FILL, xpadding=6, ypadding=6)
         self.table_services.attach(self.label_amule_running,         2, 3, 0, 1, xoptions=gtk.FILL, yoptions=gtk.FILL, xpadding=6, ypadding=6)
-        self.table_services.attach(self.button_amule_disable,        3, 4, 0, 1, xoptions=gtk.FILL, yoptions=gtk.FILL, xpadding=6, ypadding=6)
-        self.table_services.attach(self.button_amule_launch_website, 4, 5, 0, 1, xoptions=gtk.FILL, yoptions=gtk.FILL, xpadding=6, ypadding=6)
+        self.table_services.attach(self.button_amule_launch_website, 3, 4, 0, 1, xoptions=gtk.FILL, yoptions=gtk.FILL, xpadding=6, ypadding=6)
 
         # Torrent
         self.label_torrent_title = gtk.Label("uTorrent")
         self.label_torrent_installed = gtk.Label(EMPTY)
         self.label_torrent_running = gtk.Label(EMPTY)
-        self.button_torrent_disable = gtk.Button("Disable")
         self.button_torrent_launch_website = gtk.Button("Launch Website")
 
         self.table_services.attach(self.label_torrent_title,           0, 1, 1, 2, xoptions=gtk.FILL, yoptions=gtk.FILL, xpadding=6, ypadding=6)
         self.table_services.attach(self.label_torrent_installed,       1, 2, 1, 2, xoptions=gtk.FILL, yoptions=gtk.FILL, xpadding=6, ypadding=6)
         self.table_services.attach(self.label_torrent_running,         2, 3, 1, 2, xoptions=gtk.FILL, yoptions=gtk.FILL, xpadding=6, ypadding=6)
-        self.table_services.attach(self.button_torrent_disable,        3, 4, 1, 2, xoptions=gtk.FILL, yoptions=gtk.FILL, xpadding=6, ypadding=6)
-        self.table_services.attach(self.button_torrent_launch_website, 4, 5, 1, 2, xoptions=gtk.FILL, yoptions=gtk.FILL, xpadding=6, ypadding=6)
+        self.table_services.attach(self.button_torrent_launch_website, 3, 4, 1, 2, xoptions=gtk.FILL, yoptions=gtk.FILL, xpadding=6, ypadding=6)
 
         # apache / owncloud
         self.label_owncloud_title = gtk.Label("owncloud")
         self.label_owncloud_installed = gtk.Label(EMPTY)
         self.label_owncloud_running = gtk.Label(EMPTY)
-        self.button_owncloud_disable = gtk.Button("Disable")
         self.button_owncloud_launch_website = gtk.Button("Launch Website")
 
         self.table_services.attach(self.label_owncloud_title,           0, 1, 2, 3, xoptions=gtk.FILL, yoptions=gtk.FILL, xpadding=6, ypadding=6)
         self.table_services.attach(self.label_owncloud_installed,       1, 2, 2, 3, xoptions=gtk.FILL, yoptions=gtk.FILL, xpadding=6, ypadding=6)
         self.table_services.attach(self.label_owncloud_running,         2, 3, 2, 3, xoptions=gtk.FILL, yoptions=gtk.FILL, xpadding=6, ypadding=6)
-        self.table_services.attach(self.button_owncloud_disable,        3, 4, 2, 3, xoptions=gtk.FILL, yoptions=gtk.FILL, xpadding=6, ypadding=6)
-        self.table_services.attach(self.button_owncloud_launch_website, 4, 5, 2, 3, xoptions=gtk.FILL, yoptions=gtk.FILL, xpadding=6, ypadding=6)
+        self.table_services.attach(self.button_owncloud_launch_website, 3, 4, 2, 3, xoptions=gtk.FILL, yoptions=gtk.FILL, xpadding=6, ypadding=6)
 
         # git
         self.label_git_title = gtk.Label("git")
@@ -225,17 +225,38 @@ class MainWindow:
         self.table_services.attach(self.label_git_installed,       1, 2, 3, 4, xoptions=gtk.FILL, yoptions=gtk.FILL, xpadding=6, ypadding=6)
 
 
-
-
-
         self.frame_services.add(self.table_services)
 
         self.label_title_slide_services = gtk.Label("Services")
         self.notebook.append_page(self.frame_services, self.label_title_slide_services)
 
-        self.main_win.show_all()
 
-    
+        ##### Slide about resources
+        self.frame_server_resources = gtk.Frame("Server Resources")
+        self.table_server_resources = gtk.Table(2, 2, False)
+
+        self.label_ram_title = gtk.Label("Ram memory: ")
+        self.label_ram_total_and_used = gtk.Label(EMPTY)
+        self.label_hd_title = gtk.Label("Hdd space: ")
+        self.label_hd_total_and_used = gtk.Label(EMPTY)
+
+        self.table_server_resources.attach(self.label_ram_title, 0, 1, 0, 1, xoptions=gtk.FILL, yoptions=gtk.FILL, xpadding=6, ypadding=6)
+        self.table_server_resources.attach(self.label_ram_total_and_used, 1, 2, 0, 1, xoptions=gtk.FILL, yoptions=gtk.FILL, xpadding=6, ypadding=6)
+        self.table_server_resources.attach(self.label_hd_title, 0, 1, 1, 2, xoptions=gtk.FILL, yoptions=gtk.FILL, xpadding=6, ypadding=6)
+        self.table_server_resources.attach(self.label_hd_total_and_used, 1, 2, 1, 2, xoptions=gtk.FILL, yoptions=gtk.FILL, xpadding=6, ypadding=6)
+
+
+
+
+        self.frame_server_resources.add(self.table_server_resources)
+
+        self.label_title_slide_server_resources = gtk.Label("Server Resources")
+        self.notebook.append_page(self.frame_server_resources, self.label_title_slide_server_resources)
+
+
+
+
+        self.main_win.show_all()    
         self.completeInformation()
     
 
