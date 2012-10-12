@@ -46,6 +46,7 @@ class rasp_cln():
 
     def closeConnection(self):
         logging.debug("Closing connection")
+        self.socket.send("quit")
         self.socket.close()  
 
 
