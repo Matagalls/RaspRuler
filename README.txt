@@ -13,7 +13,7 @@ alex.cors.bardolet@gmail.com
 
 /////////////////////////////////   License   /////////////////////////////////
 
-Rapyd is free software; you can redistribute if and/or modify it under
+RaspRuler is free software; you can redistribute if and/or modify it under
 the terms of the GNU General Public License, version 3, as published by
 the Free Software Foundation. The full text of the  License is included in the
 project main folder.
