@@ -2,7 +2,7 @@
 ///                               RaspRuler                                 ///
 ///////////////////////////////////////////////////////////////////////////////
 
-RaspRuler is a simple Gui program that allow control over LAN of a Raspberry Pi
+RaspRuler is a simple Gui program that allows control over LAN of a Raspberry Pi
 server. This is a personal project, so it only fits the personal needs of 
 myself, but I'm sharing the code if it's any help to anybody. Please send any
 suggestion or bug report to:
@@ -19,6 +19,6 @@ the Free Software Foundation. The full text of the  License is included in the
 project main folder.
 
 
-///////////////////////////////   Requeriments   //////////////////////////////
+///////////////////////////////   Requirements   //////////////////////////////
 
 - Python 2.7 or greater
