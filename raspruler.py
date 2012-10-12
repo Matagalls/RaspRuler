@@ -30,7 +30,7 @@ import gtk
 import sys
 import logging
 
-import RaspberryPi_cln as RpBy
+import raspberryPi_cln as RpBy
 import constants as K
 
 EMPTY = " -- "
