@@ -47,7 +47,6 @@ class MainWindow:
 
     def initConnectionWithClient(self):
         """ Try to set a connection with the RpBy server. """
-
         self.client = RpBy.rasp_cln()
 
 
@@ -254,13 +253,23 @@ class MainWindow:
         self.notebook.append_page(self.frame_server_resources, self.label_title_slide_server_resources)
 
 
+        ##### Slide about backup's
+        self.frame_backup = gtk.Frame("Backup")
 
+
+
+
+        self.label_title_slide_backup = gtk.Label("Backup")
+        self.notebook.append_page(self.frame_backup, self.label_title_slide_backup)
+
+
+
+        ##### End of slices
 
         self.main_win.show_all()    
         self.completeInformation()
     
 
-    # Ahora se define el método "on_quit" que destruye la aplicación
     def on_quit(self, widget, data=None):
 
         if self.client.connection:

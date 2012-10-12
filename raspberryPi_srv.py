@@ -51,6 +51,9 @@ class rasp_srv():
                     "torrent_installed": "",
                     "git_installed": "",
                     "owncloud_installed": "",
+                    "amule_running": "",
+                    "torrent_running": "",
+                    "owncloud_running": "",
                     }           
 
         if not no_bucle:
@@ -193,6 +196,25 @@ class rasp_srv():
         self.info["cpu"] = self.getMachineName()
         self.info["os"] = self.getOsName()
         self.getRamInfo()
+
+        self.checkRunningServices()
+
+
+    def checkRunningServices(self):
+        """ Check for running sevices """
+        p = subprocess.Popen('service --status-all', shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        services = p.stdout.readlines()
+        amule_running, transmission_running = False, False
+        for service in services:
+            if service.find("amule_daemon") != -1:
+                amule_running = True
+            elif service.find("transmission_daemon") != -1:
+                transmission_running = True
+
+        self.info["amule_running"] = amule_running
+        self.info["torrent_running"] = transmission_running
+        self.info["owncloud_running"] = "not_implemented"
+        
     
             
 
@@ -217,6 +239,11 @@ if __name__ == "__main__":
         no_bucle = True
     else:
         no_bucle = False
+
+    if os.geteuid() == 0:
+        logging.info("Starting server as root.")
+    else:
+        logging.warning("Stargint server without root privileges")
 
     server = rasp_srv(no_bucle)
 
