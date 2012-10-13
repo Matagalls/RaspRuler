@@ -53,17 +53,19 @@ def memoryResizer(memory):
 
     memory = int(memory)
     if memory / 1024 > 1:
-        memory = memory / 1024
+        memory_int = memory / 1024
+        memory_dec = memory % 1024
         units = "Mb"
-        if memory / 1024 > 1:
-            memory = memory / 1024
+        if memory_int / 1024 > 1:
+            memory = memory_int
+            memory_int = memory / 1024
+            memory_dec = memory % 1024
             units = "Gb"
 
     else:
         units = "Kb"
 
-    return str(memory) + " " + units
-# NO DECIMALS!!!!!!!!!!!!!!!
+    return str(memory_int) + "." + str(memory_dec)[:2] + " " + units
 
 
 def strBoolean(bool_value):
