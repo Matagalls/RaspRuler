@@ -228,6 +228,7 @@ if __name__ == "__main__":
 
     parametres = set(sys.argv[1:])
 
+    # Initializing logger
     if len(parametres & {"-d", "-debug", "--debug"}) > 0:   
         logging.basicConfig(level=logging.DEBUG, format='%(levelname)s:%(message)s')
         logging.info('Logger iniciat amb nivell DEBUG')
@@ -240,6 +241,17 @@ if __name__ == "__main__":
     else:
         no_bucle = False
 
+    # Check OS
+    if (os.name == "posix"):
+        logging.info("OS Linux")
+    elif (os.name == "nt"):
+        logging.error("OS Windows not suported. Exiting ...")
+        sys.exit(-1)
+    else:
+        logging.error("Unknown OS. Exiting ...")
+        sys.exit(-1)
+
+    # Check if running as superuser
     if os.geteuid() == 0:
         logging.info("Starting server as root.")
     else:

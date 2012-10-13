@@ -113,5 +113,15 @@ class rasp_cln():
 
 if __name__ == "__main__":
 
+    # Check OS
+    if (os.name == "posix"):
+        logging.info("OS Linux")
+    elif (os.name == "nt"):
+        logging.error("OS Windows not suported. Exiting ...")
+        sys.exit(-1)
+    else:
+        logging.error("Unknown OS. Exiting ...")
+        sys.exit(-1)
+
     client = rasp_cln()
         
