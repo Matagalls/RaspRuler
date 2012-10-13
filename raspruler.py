@@ -288,7 +288,8 @@ class MainWindow:
 
         def createStringWithPercents(value1, total):
             """ Return a string with 2 values and the percent. """
-            return K.memoryResizer(value1) + " of " + K.memoryResizer(total) + " used (" + str(100*int(value1)/int(total)) + "%)" 
+            return K.memoryResizer(value1) + " of " + K.memoryResizer(total)\
+                     + " used (" + str(100*int(value1)/int(total)) + "%)" 
 
 
         dict_info = self.client.updateVariableInfo()

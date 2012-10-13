@@ -1,0 +1,33 @@
+///////////////////////////////////////////////////////////////////////////////
+///                               RaspRuler                                 ///
+///////////////////////////////////////////////////////////////////////////////
+
+INFORMATION
+
+RaspRuler has been made to meet my own needs. This needs are to provide an easy
+to use GUI that allows to administrate in some ways a raspberryPi server. Some
+of the covered needs are:
+
+- p2p (amule)
+- torrent (transmission)
+- git (local server)
+- owncloud 
+- file sharing (samba)
+
+The hardware setup is:
+
+
+ +-------------+        LAN        +---------------------+      SD    +------+
+ |  CLIENT PC  | <===============> |  RaspberryPi Server | <========> |  SD  |
+ +-------------+                   +---------------------+            +------+
+                                                    ^
+                                                     \\ USB    +-------------+
+                                                       ======> | USB storage |
+                                                               +-------------+ 
+
+ \_____________/                   \_____________________/
+ raspberrypi_cln                        raspberryPi_srv
+  + raspruler
+
+
+Both raspberryPi server and client PC have to be in the same LAN net.

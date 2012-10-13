@@ -9,6 +9,7 @@ suggestion or bug report to:
 
 alex.cors.bardolet@gmail.com
 
+For more information, please read INFO file.
 
 
 /////////////////////////////////   License   /////////////////////////////////
@@ -21,4 +22,6 @@ project main folder.
 
 ///////////////////////////////   Requeriments   //////////////////////////////
 
-- Python 2.7 or greater
+- Raspberry Pi server running Linux
+- Host Computer running Linux (Windows is not suported yet)
+- Python 2.7 or greater in both machines
