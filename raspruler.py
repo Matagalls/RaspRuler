@@ -55,14 +55,15 @@ class MainWindow:
         
         dict_struct_info = self.client.getStruturalInfo()
 
-        self.label_OS_value.set_text(dict_struct_info["os"])
-        self.label_cpu_value.set_text(dict_struct_info["cpu"])
-        self.label_ram_value.set_text(K.memoryResizer(dict_struct_info["ram_total"]))
+        if dict_struct_info is not False:
+            self.label_OS_value.set_text(dict_struct_info["os"])
+            self.label_cpu_value.set_text(dict_struct_info["cpu"])
+            self.label_ram_value.set_text(K.memoryResizer(dict_struct_info["ram_total"]))
 
-        self.label_amule_installed.set_text(K.strBoolean(dict_struct_info["amule_installed"]))
-        self.label_torrent_installed.set_text(K.strBoolean(dict_struct_info["torrent_installed"]))
-        self.label_git_installed.set_text(K.strBoolean(dict_struct_info["git_installed"]))
-        self.label_owncloud_installed.set_text(K.strBoolean(dict_struct_info["owncloud_installed"]))
+            self.label_amule_installed.set_text(K.strBoolean(dict_struct_info["amule_installed"]))
+            self.label_torrent_installed.set_text(K.strBoolean(dict_struct_info["torrent_installed"]))
+            self.label_git_installed.set_text(K.strBoolean(dict_struct_info["git_installed"]))
+            self.label_owncloud_installed.set_text(K.strBoolean(dict_struct_info["owncloud_installed"]))
 
 
     def get_main_menu(self, window):

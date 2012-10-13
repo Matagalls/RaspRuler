@@ -58,12 +58,12 @@ class rasp_cln():
                 self.socket.connect(("localhost", K.PORT))
                 self.connection = True
                 logging.debug("Connection established")
+                self.socket.settimeout(TIMEOUT)
             except:
                 self.connection = False
                 logging.warning("Can't found server. Connection not established")
                 self.socket.close()
 
-            self.socket.settimeout(TIMEOUT)
         else:
             logging.info("Connection already set. Ignoring ... ")
 
@@ -123,5 +123,5 @@ if __name__ == "__main__":
         logging.error("Unknown OS. Exiting ...")
         sys.exit(-1)
 
-    client = rasp_cln()
+    client   = rasp_cln()
         
