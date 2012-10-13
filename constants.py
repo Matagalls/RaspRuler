@@ -31,7 +31,7 @@ import ast
 VERSION = "0.0.1"
 PORT = 3658
 # All the commands between the client and the server.
-COMMANDS = {"free_space_disk","quit","get_structural_info"}
+COMMANDS = {"free_space_disk","quit","get_structural_info","update_variable_info"}
 
 UNKNOWN_COMMAND = "Unknown_command"
 

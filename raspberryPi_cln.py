@@ -72,13 +72,10 @@ class rasp_cln():
         """ Request all the structural info """
 
         if self.connection:
-            struct_info = self.senderAndReciverManager("get_structural_info")
-            if struct_info is not False:
-                dict_struct_info = K.unserializeDict(struct_info)
-                return dict_struct_info
-
+            dict_info = self.senderAndReciverManager("get_structural_info")
+            if dict_info is not False:
+                return dict_info
             else:
-                logging.warning("Error unpackint dict_struct")
                 return False
         else:
             return False
@@ -87,11 +84,13 @@ class rasp_cln():
     def senderAndReciverManager(self, command):
         """ Manage sending petitions over the socket and reading them.
             Return what server send if all the process succeed, and False
-            if something had gone wrong. """
+            if something had gone wrong. 
+            
+            Return a dict with all the data. """
 
         if self.connection:
             if command in COMMANDS:
-                self.socket.send("get_structural_info")
+                self.socket.send(command)
                 answer = self.socket.recv(1000)
 
                 if answer is not None:
@@ -99,7 +98,7 @@ class rasp_cln():
                         logging.warning("Server can't understant last command: %s", command)
                         return False
                     else:
-                        return answer
+                        return K.unserializeDict(answer)
                 else:
                     logging.warning("Recived empty answer from command: %s", command)
                     return False
@@ -109,6 +108,12 @@ class rasp_cln():
         else:
             logging.warning("No connection established")
             return False
+
+
+    def updateVariableInfo(self):
+        """ Refresh some variable info. """
+        return self.senderAndReciverManager("update_variable_info")       
+
 
 
 if __name__ == "__main__":

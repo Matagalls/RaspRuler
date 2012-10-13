@@ -45,16 +45,18 @@ class rasp_srv():
         self.info = {"os": "", 
                     "cpu": "",
                     "ram_total": "",
-                    "ram_used": "",
-                    "ram_free": "",
                     "amule_installed": "",
                     "torrent_installed": "",
                     "git_installed": "",
-                    "owncloud_installed": "",
-                    "amule_running": "",
+                    "owncloud_installed": ""
+                    }   
+
+        self.variable_info = {"amule_running": "",
                     "torrent_running": "",
                     "owncloud_running": "",
-                    }           
+                    "ram_used": "",
+                    "ram_free": ""
+                    }       
 
         if not no_bucle:
             self.wait()
@@ -85,6 +87,10 @@ class rasp_srv():
                     elif command == "get_structural_info":
                         self.getStructuralInfo()
                         answer = K.serializeDict(self.info)
+
+                    elif command == "update_variable_info":
+                        self.getVariableInfo()
+                        answer = K.serializeDict(self.variable_info)
 
                     elif command == "quit":
                         break 
@@ -135,9 +141,9 @@ class rasp_srv():
             if name == "total":
                 self.info["ram_total"] = amount
             elif name == "used":
-                self.info["ram_used"] = amount
+                self.variable_info["ram_used"] = amount
             elif name == "free":
-                self.info["ram_free"] = amount
+                self.variable_info["ram_free"] = amount
 
 
 
@@ -214,9 +220,16 @@ class rasp_srv():
         self.info["amule_running"] = amule_running
         self.info["torrent_running"] = transmission_running
         self.info["owncloud_running"] = "not_implemented"
+
+
+    def getVariableInfo(self):
+        self.variable_info["amule_running"] = "sf"
+        self.variable_info["torrent_running"] = "sf"
+        self.variable_info["owncloud_running"] = "sf"
         
-    
-            
+        self.getRamInfo()
+#        self.variable_info["ram_used"] = 
+#        self.variable_info["ram_free"] = "sf"
 
 
 

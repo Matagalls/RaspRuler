@@ -29,6 +29,7 @@ pygtk.require("2.0")
 import gtk
 import sys
 import logging
+import gobject
 
 import raspberryPi_cln as RpBy
 import constants as K
@@ -53,17 +54,17 @@ class MainWindow:
     def setStructuralInfo(self):
         """ Set all the structural info coming from the server. """
         
-        dict_struct_info = self.client.getStruturalInfo()
+        self.dict_struct_info = self.client.getStruturalInfo()
 
-        if dict_struct_info is not False:
-            self.label_OS_value.set_text(dict_struct_info["os"])
-            self.label_cpu_value.set_text(dict_struct_info["cpu"])
-            self.label_ram_value.set_text(K.memoryResizer(dict_struct_info["ram_total"]))
+        if self.dict_struct_info is not False:
+            self.label_OS_value.set_text(self.dict_struct_info["os"])
+            self.label_cpu_value.set_text(self.dict_struct_info["cpu"])
+            self.label_ram_value.set_text(K.memoryResizer(self.dict_struct_info["ram_total"]))
 
-            self.label_amule_installed.set_text(K.strBoolean(dict_struct_info["amule_installed"]))
-            self.label_torrent_installed.set_text(K.strBoolean(dict_struct_info["torrent_installed"]))
-            self.label_git_installed.set_text(K.strBoolean(dict_struct_info["git_installed"]))
-            self.label_owncloud_installed.set_text(K.strBoolean(dict_struct_info["owncloud_installed"]))
+            self.label_amule_installed.set_text(K.strBoolean(self.dict_struct_info["amule_installed"]))
+            self.label_torrent_installed.set_text(K.strBoolean(self.dict_struct_info["torrent_installed"]))
+            self.label_git_installed.set_text(K.strBoolean(self.dict_struct_info["git_installed"]))
+            self.label_owncloud_installed.set_text(K.strBoolean(self.dict_struct_info["owncloud_installed"]))
 
 
     def get_main_menu(self, window):
@@ -80,6 +81,7 @@ class MainWindow:
 
     
     def __init__(self):
+        """ Painfully long creation of the GUI. Please don't cry blood. """
 
         self.initConnectionWithClient()
 
@@ -235,7 +237,7 @@ class MainWindow:
         self.frame_server_resources = gtk.Frame("Server Resources")
         self.table_server_resources = gtk.Table(2, 2, False)
 
-        self.label_ram_title = gtk.Label("Ram memory: ")
+        self.label_ram_title = gtk.Label("Ram memory used: ")
         self.label_ram_total_and_used = gtk.Label(EMPTY)
         self.label_hd_title = gtk.Label("Hdd space: ")
         self.label_hd_total_and_used = gtk.Label(EMPTY)
@@ -269,19 +271,37 @@ class MainWindow:
 
         self.main_win.show_all()    
         self.completeInformation()
+
+        ##### Add timer
+        gobject.timeout_add_seconds(5, self.timedFunctions)
     
 
     def on_quit(self, widget, data=None):
-
+        """ Closing function. """
         if self.client.connection:
             self.client.closeConnection()
-
         gtk.main_quit()
 
 
-    def service_amule_disable(self, widget):
-        print "service_amule_disable"
+    def updateVariableInfo(self):
+        """ Update all the variable info. """
 
+        def createStringWithPercents(value1, total):
+            """ Return a string with 2 values and the percent. """
+            return K.memoryResizer(value1) + " of " + K.memoryResizer(total) + " used (" + str(100*int(value1)/int(total)) + "%)" 
+
+
+        dict_info = self.client.updateVariableInfo()
+
+        string = createStringWithPercents(dict_info["ram_used"],self.dict_struct_info["ram_total"])
+        self.label_ram_total_and_used.set_text(string)
+
+
+
+    def timedFunctions(self):
+        """ Bundle all the timed functions. """
+        self.updateVariableInfo()
+        return True
 
 
 if __name__ == "__main__":
