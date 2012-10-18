@@ -239,7 +239,7 @@ class rasp_srv():
         """ Check if the program is running under superuser privilegies. """
         if os.geteuid() == 0:
             return True
-        else
+        else:
             return False
 
 
@@ -247,7 +247,7 @@ class rasp_srv():
         """ Close computer. """
         if self.isSuperUser():
             p = subprocess.Popen('halt', shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-        else
+        else:
             return "no_superuser"
 
 
