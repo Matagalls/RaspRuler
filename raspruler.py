@@ -120,7 +120,7 @@ class MainWindow:
 
         ##### Slide page about state of the raspberry
 
-        self.table_general_info = gtk.Table(3, 1, False)
+        self.table_general_info = gtk.Table(4, 2, False)
 
         # Hardware frame
         self.frame_hardware_info = gtk.Frame("General Hardware Information")
@@ -138,7 +138,7 @@ class MainWindow:
         self.table_hardware_info.attach(self.label_cpu_value, 1, 2, 1, 2, xoptions=gtk.FILL, yoptions=gtk.FILL, xpadding=6, ypadding=6)
 
         self.frame_hardware_info.add(self.table_hardware_info)
-        self.table_general_info.attach(self.frame_hardware_info, 0, 1, 0, 1, xoptions=gtk.FILL, yoptions=gtk.FILL, xpadding=6, ypadding=6)
+        self.table_general_info.attach(self.frame_hardware_info, 0, 2, 0, 1, xoptions=gtk.FILL, yoptions=gtk.FILL, xpadding=6, ypadding=6)
 
         # Software frame
 
@@ -153,7 +153,7 @@ class MainWindow:
         self.table_software_info.attach(self.label_OS_value, 1, 2, 0, 1, xoptions=gtk.FILL, yoptions=gtk.FILL, xpadding=6, ypadding=6)
 
         self.frame_software_info.add(self.table_software_info)
-        self.table_general_info.attach(self.frame_software_info, 0, 1, 1, 2, xoptions=gtk.FILL, yoptions=gtk.FILL, xpadding=6, ypadding=6)
+        self.table_general_info.attach(self.frame_software_info, 0, 2, 1, 2, xoptions=gtk.FILL, yoptions=gtk.FILL, xpadding=6, ypadding=6)
 
 
         # Connection frame
@@ -173,8 +173,14 @@ class MainWindow:
         self.table_connection_info.attach(self.label_connection_value, 1, 2, 0, 1, xoptions=gtk.FILL, yoptions=gtk.FILL, xpadding=6, ypadding=6)
 
         self.frame_connection_info.add(self.table_connection_info)
-        self.table_general_info.attach(self.frame_connection_info, 0, 1, 2, 3, xoptions=gtk.FILL, yoptions=gtk.FILL, xpadding=6, ypadding=6)
+        self.table_general_info.attach(self.frame_connection_info, 0, 2, 2, 3, xoptions=gtk.FILL, yoptions=gtk.FILL, xpadding=6, ypadding=6)
 
+
+        # Halt button and restart button
+        self.button_halt = gtk.Button("Halt Server")
+        self.button_restart = gtk.Button("Restart Server")
+        self.table_general_info.attach(self.button_halt, 0, 1, 3, 4, xoptions=gtk.FILL, yoptions=gtk.FILL, xpadding=6, ypadding=6)
+        self.table_general_info.attach(self.button_restart, 1, 2, 3, 4, xoptions=gtk.FILL, yoptions=gtk.FILL, xpadding=6, ypadding=6)
 
 
         self.label_title_slide_info = gtk.Label("General information")
@@ -260,11 +266,8 @@ class MainWindow:
         self.frame_backup = gtk.Frame("Backup")
 
 
-
-
         self.label_title_slide_backup = gtk.Label("Backup")
         self.notebook.append_page(self.frame_backup, self.label_title_slide_backup)
-
 
 
         ##### End of slices

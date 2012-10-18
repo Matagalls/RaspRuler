@@ -31,7 +31,8 @@ import ast
 VERSION = "0.0.1"
 PORT = 3658
 # All the commands between the client and the server.
-COMMANDS = {"free_space_disk","quit","get_structural_info","update_variable_info"}
+COMMANDS = {"free_space_disk","quit","get_structural_info",\
+            "update_variable_info","halt"}
 
 UNKNOWN_COMMAND = "Unknown_command"
 
@@ -49,7 +50,7 @@ def unserializeDict(string):
 
 
 def memoryResizer(memory):
-    """ Adjust memory size in the correct units. Memory parameter in Kbytes. """
+    """ Adjust memory size in the correct units. Memory parameter in Kbyts. """
 
     memory = int(memory)
     if memory / 1024 > 1:
@@ -69,7 +70,7 @@ def memoryResizer(memory):
 
 
 def strBoolean(bool_value):
-    """ Convert a boolean value into a string in order to put it in a label. """
+    """ Convert a boolean value into a string in order to put it in a label """
 
     if bool_value is True:
         return "Yes"

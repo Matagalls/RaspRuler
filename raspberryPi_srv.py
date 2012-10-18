@@ -91,6 +91,9 @@ class rasp_srv():
                     elif command == "update_variable_info":
                         self.getVariableInfo()
                         answer = K.serializeDict(self.variable_info)
+                    
+                    elif command == "halt":
+                        self.halt()
 
                     elif command == "quit":
                         break 
@@ -231,6 +234,21 @@ class rasp_srv():
 #        self.variable_info["ram_used"] = 
 #        self.variable_info["ram_free"] = "sf"
 
+
+    def isSuperUser(self):
+        """ Check if the program is running under superuser privilegies. """
+        if os.geteuid() == 0:
+            return True
+        else
+            return False
+
+
+    def halt(self):
+        """ Close computer. """
+        if self.isSuperUser():
+            p = subprocess.Popen('halt', shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        else
+            return "no_superuser"
 
 
     #def doBackUp
