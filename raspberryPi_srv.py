@@ -93,10 +93,10 @@ class rasp_srv():
                         answer = K.serializeDict(self.variable_info)
                     
                     elif command == "halt":
-                        self.halt()
+                        answer = self.halt()
 
                     elif command == "reboot":
-                        self.reboot()
+                        answer = self.reboot()
 
                     elif command == "quit":
                         break 
@@ -250,6 +250,7 @@ class rasp_srv():
         """ Close computer. """
         if self.isSuperUser():
             p = subprocess.Popen('halt', shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+            return True
         else:
             return "no_superuser"
 
@@ -258,6 +259,7 @@ class rasp_srv():
         """ Reboot computer. """
         if self.isSuperUser():
             p = subprocess.Popen('reboot', shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+            return True
         else:
             return "no_superuser"
 

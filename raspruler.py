@@ -110,14 +110,12 @@ class MainWindow:
 
         self.config_info = self.read_config_file()
 
-        print self.config_info
-
         self.initConnectionWithClient(self.config_info["ip"])
 
         self.main_win = gtk.Window(gtk.WINDOW_TOPLEVEL)
         self.main_win.set_title("RaspRuler")   
         self.main_win.set_position(gtk.WIN_POS_CENTER)
-        self.main_win.set_size_request(500, 400)     
+        self.main_win.set_size_request(640, 400)     
         self.main_win.connect("destroy", self.on_quit)
         self.main_win.set_border_width(10)
         
@@ -342,11 +340,12 @@ class MainWindow:
 ########## Button attending Functions
 
     def halt_request(self, widget, data=None):
-        answer = self.client.senderAndReciverManager("halt")
+        answer = self.client.halt_request()
 
     def reboot_request(self, widget, data=None):
-        answer = self.client.senderAndReciverManager("reboot")
+        answer = self.client.reboot_request()
 
+########## </Button attending Functions>
 
     def on_quit(self, widget, data=None):
         """ Closing function. """

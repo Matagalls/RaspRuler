@@ -99,7 +99,10 @@ class rasp_cln():
                         logging.warning("Server can't understant last command: %s", command)
                         return False
                     else:
-                        return K.unserializeDict(answer)
+                        if command == "get_structural_info" or command == "update_variable_info":
+                            return K.unserializeDict(answer)
+                        else:
+                            return answer
                 else:
                     logging.warning("Recived empty answer from command: %s", command)
                     return False
@@ -113,7 +116,23 @@ class rasp_cln():
 
     def updateVariableInfo(self):
         """ Refresh some variable info. """
-        return self.senderAndReciverManager("update_variable_info")       
+        return self.senderAndReciverManager("update_variable_info")   
+
+
+    def halt_request(self):
+        answer = self.senderAndReciverManager("halt")
+        if answer == True:
+            print "xapant ... "
+        elif answer == "no_superuser":
+            logging.warning("Server process have no permission to halt.")
+
+
+    def reboot_request(self):
+        answer = self.senderAndReciverManager("reboot")
+        if answer == True:
+            print "rebotant ... "
+        elif answer == "no_superuser":
+            logging.warning("Server process have no permission to reboot.")    
 
 
 
