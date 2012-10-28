@@ -121,19 +121,16 @@ class rasp_cln():
 
     def halt_request(self):
         answer = self.senderAndReciverManager("halt")
-        if answer == True:
-            print "xapant ... "
-        elif answer == "no_superuser":
+        if answer == "no_superuser":
             logging.warning("Server process have no permission to halt.")
+        return answer
 
 
     def reboot_request(self):
         answer = self.senderAndReciverManager("reboot")
-        if answer == True:
-            print "rebotant ... "
-        elif answer == "no_superuser":
+        if answer == "no_superuser":
             logging.warning("Server process have no permission to reboot.")    
-
+        return answer
 
 
 if __name__ == "__main__":

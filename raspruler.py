@@ -39,7 +39,7 @@ EMPTY = " -- "
 NO = "NO"
 YES = "YES"
 
-class MainWindow:
+class MainWindow(gtk.Window):
 
 
     def completeInformation(self):
@@ -341,11 +341,26 @@ class MainWindow:
 
     def halt_request(self, widget, data=None):
         answer = self.client.halt_request()
+        if answer == "no_superuser":
+            self.dialog_no_su_server()
 
     def reboot_request(self, widget, data=None):
         answer = self.client.reboot_request()
+        if answer == "no_superuser":
+            self.dialog_no_su_server()
 
 ########## </Button attending Functions>
+
+########## DialogMessage
+
+    def dialog_no_su_server(self):
+        md = gtk.MessageDialog(self, 
+            gtk.DIALOG_DESTROY_WITH_PARENT, gtk.MESSAGE_WARNING, 
+            gtk.BUTTONS_CLOSE, "Server hasn't superuser privilegies.")
+        md.run()
+        md.destroy()
+
+########## </DialogMessage>
 
     def on_quit(self, widget, data=None):
         """ Closing function. """
@@ -367,7 +382,6 @@ class MainWindow:
 
         string = createStringWithPercents(dict_info["ram_used"],self.dict_struct_info["ram_total"])
         self.label_ram_total_and_used.set_text(string)
-
 
 
     def timedFunctions(self):
