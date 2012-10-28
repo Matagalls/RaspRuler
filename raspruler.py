@@ -33,6 +33,7 @@ import gobject
 
 import raspberryPi_cln as RpBy
 import constants as K
+import config_file_manager as CFM
 
 EMPTY = " -- "
 NO = "NO"
@@ -46,9 +47,9 @@ class MainWindow:
         self.setStructuralInfo()
 
 
-    def initConnectionWithClient(self):
+    def initConnectionWithClient(self, server_ip):
         """ Try to set a connection with the RpBy server. """
-        self.client = RpBy.rasp_cln()
+        self.client = RpBy.rasp_cln(server_ip)
 
 
     def setStructuralInfo(self):
@@ -79,11 +80,39 @@ class MainWindow:
 
         return item_factory.get_widget("<main>")
 
+
+    def analize_config_file(self, dict_config_file):
+        """ Check for data integrity from config_file. """
+
+        config_info = {}
+
+        if dict_config_file['server_ip_type'] == "static":
+            config_info["ip"] = dict_config_file['server_ip']
+        else:
+            pass
+
+        return config_info
+
+
+
+
+    def read_config_file(self):
+        """ Read the config file in order to get server ip and so on. """
+
+        self.configFile = CFM.ConfigFile()
+
+        return self.analize_config_file(self.configFile.parseConfigFile())
+
+
     
     def __init__(self):
         """ Painfully long creation of the GUI. Please don't cry blood. """
 
-        self.initConnectionWithClient()
+        self.config_info = self.read_config_file()
+
+        print self.config_info
+
+        self.initConnectionWithClient(self.config_info["ip"])
 
         self.main_win = gtk.Window(gtk.WINDOW_TOPLEVEL)
         self.main_win.set_title("RaspRuler")   
@@ -314,7 +343,7 @@ if __name__ == "__main__":
 
     if len(parametres & {"-d", "-debug", "--debug"}) > 0:   
         logging.basicConfig(level=logging.DEBUG, format='%(levelname)s:%(message)s')
-        logging.info('Logger iniciat amb nivell DEBUG')
+        logging.info('Logger initiated in DEBUG level')
     else:
         logging.basicConfig(format='%(levelname)s:%(message)s')
 

@@ -37,9 +37,10 @@ TIMEOUT = 2
 
 class rasp_cln():
 
-    def __init__(self):
+    def __init__(self, server_ip):
 
         self.connection = False
+        self.server_ip = server_ip
 
         self.setConnection()
 
@@ -55,7 +56,7 @@ class rasp_cln():
         self.socket = socket.socket()
         if self.connection is not True:
             try:
-                self.socket.connect(("localhost", K.PORT))
+                self.socket.connect((self.server_ip, K.PORT))
                 self.connection = True
                 logging.debug("Connection established")
                 self.socket.settimeout(TIMEOUT)
