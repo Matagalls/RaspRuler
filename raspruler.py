@@ -308,6 +308,25 @@ class MainWindow:
         self.notebook.append_page(self.frame_backup, self.label_title_slide_backup)
 
 
+        ##### Slide about change parameters
+        self.frame_parameters = gtk.Frame("Parameters")
+
+        self.table_parameters = gtk.Table(1, 2, False)
+
+        self.label_par_server_ip = gtk.Label("Server IP")
+        self.entry_par_server_ip = gtk.Entry()
+        self.button_apply_par_modifications = gtk.Button("Apply modifications")
+
+        self.table_parameters.attach(self.label_par_server_ip, 0, 1, 0, 1, xoptions=gtk.FILL, yoptions=gtk.FILL, xpadding=6, ypadding=6)
+        self.table_parameters.attach(self.entry_par_server_ip, 1, 2, 0, 1, xoptions=gtk.FILL, yoptions=gtk.FILL, xpadding=6, ypadding=6)
+        self.table_parameters.attach(self.button_apply_par_modifications, 1, 2, 1, 2, xoptions=gtk.FILL, yoptions=gtk.FILL, xpadding=6, ypadding=6)
+
+
+        self.frame_parameters.add(self.table_parameters)
+        self.label_title_slide_parameters = gtk.Label("Parameters")
+        self.notebook.append_page(self.frame_parameters, self.label_title_slide_parameters)
+
+
         ##### End of slices
 
         self.main_win.show_all()    
