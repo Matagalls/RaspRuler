@@ -189,7 +189,9 @@ class MainWindow:
 
         self.frame_connection_info = gtk.Frame("Connection with the server")
 
-        self.table_connection_info = gtk.Table(1, 1, False)
+        self.table_connection_info = gtk.Table(2, 1, False)
+
+             # Connection label
 
         self.label_connection_title = gtk.Label("Connection:")
 
@@ -198,8 +200,15 @@ class MainWindow:
         else:   
             self.label_connection_value = gtk.Label("Not Connected")
 
+            # Ip label
+
+        self.label_connection_ip_server_title = gtk.Label("Server IP:")
+        self.label_connection_ip_server_value = gtk.Label(self.config_info["ip"])
+
         self.table_connection_info.attach(self.label_connection_title, 0, 1, 0, 1, xoptions=gtk.FILL, yoptions=gtk.FILL, xpadding=6, ypadding=6)
         self.table_connection_info.attach(self.label_connection_value, 1, 2, 0, 1, xoptions=gtk.FILL, yoptions=gtk.FILL, xpadding=6, ypadding=6)
+        self.table_connection_info.attach(self.label_connection_ip_server_title, 0, 1, 1, 2, xoptions=gtk.FILL, yoptions=gtk.FILL, xpadding=6, ypadding=6)
+        self.table_connection_info.attach(self.label_connection_ip_server_value, 1, 2, 1, 2, xoptions=gtk.FILL, yoptions=gtk.FILL, xpadding=6, ypadding=6)
 
         self.frame_connection_info.add(self.table_connection_info)
         self.table_general_info.attach(self.frame_connection_info, 0, 2, 2, 3, xoptions=gtk.FILL, yoptions=gtk.FILL, xpadding=6, ypadding=6)
