@@ -247,7 +247,7 @@ class rasp_srv():
 
     def halt(self):
         """ Close computer. """
-        if self.su_permision:
+        if self.su_permission:
             p = subprocess.Popen('halt', shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
             return True
         else:
@@ -256,7 +256,7 @@ class rasp_srv():
 
     def reboot(self):
         """ Reboot computer. """
-        if self.su_permision:
+        if self.su_permission:
             p = subprocess.Popen('reboot', shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
             return True
         else:
