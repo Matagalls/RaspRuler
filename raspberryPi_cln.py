@@ -148,5 +148,5 @@ if __name__ == "__main__":
         logging.error("Unknown OS. Exiting ...")
         sys.exit(-1)
 
-    client   = rasp_cln()
+    client = rasp_cln()
         

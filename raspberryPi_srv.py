@@ -56,10 +56,16 @@ class rasp_srv():
                     "owncloud_running": "",
                     "ram_used": "",
                     "ram_free": ""
-                    }       
+                    }     
+
+        if os.geteuid() == 0:
+            self.su_permission =  True
+        else:
+            self.su_permission =  False
 
         if not no_bucle:
             self.wait()
+
 
     def wait(self):
 
@@ -238,17 +244,10 @@ class rasp_srv():
 #        self.variable_info["ram_free"] = "sf"
 
 
-    def isSuperUser(self):
-        """ Check if the program is running under superuser privilegies. """
-        if os.geteuid() == 0:
-            return True
-        else:
-            return False
-
 
     def halt(self):
         """ Close computer. """
-        if self.isSuperUser():
+        if self.su_permision:
             p = subprocess.Popen('halt', shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
             return True
         else:
@@ -257,7 +256,7 @@ class rasp_srv():
 
     def reboot(self):
         """ Reboot computer. """
-        if self.isSuperUser():
+        if self.su_permision:
             p = subprocess.Popen('reboot', shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
             return True
         else:
