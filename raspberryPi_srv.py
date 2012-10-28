@@ -95,6 +95,9 @@ class rasp_srv():
                     elif command == "halt":
                         self.halt()
 
+                    elif command == "reboot":
+                        self.reboot()
+
                     elif command == "quit":
                         break 
                     logging.info('Asked for %s command', command)
@@ -247,6 +250,14 @@ class rasp_srv():
         """ Close computer. """
         if self.isSuperUser():
             p = subprocess.Popen('halt', shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        else:
+            return "no_superuser"
+
+
+    def reboot(self):
+        """ Reboot computer. """
+        if self.isSuperUser():
+            p = subprocess.Popen('reboot', shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         else:
             return "no_superuser"
 

@@ -216,7 +216,9 @@ class MainWindow:
 
         # Halt button and restart button
         self.button_halt = gtk.Button("Halt Server")
+        self.button_halt.connect("clicked",self.halt_request)
         self.button_restart = gtk.Button("Restart Server")
+        self.button_restart.connect("clicked",self.reboot_request)
         self.table_general_info.attach(self.button_halt, 0, 1, 3, 4, xoptions=gtk.FILL, yoptions=gtk.FILL, xpadding=6, ypadding=6)
         self.table_general_info.attach(self.button_restart, 1, 2, 3, 4, xoptions=gtk.FILL, yoptions=gtk.FILL, xpadding=6, ypadding=6)
 
@@ -334,7 +336,17 @@ class MainWindow:
 
         ##### Add timer
         gobject.timeout_add_seconds(5, self.timedFunctions)
-    
+
+
+
+########## Button attending Functions
+
+    def halt_request(self, widget, data=None):
+        answer = self.client.senderAndReciverManager("halt")
+
+    def reboot_request(self, widget, data=None):
+        answer = self.client.senderAndReciverManager("reboot")
+
 
     def on_quit(self, widget, data=None):
         """ Closing function. """
