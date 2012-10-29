@@ -1,0 +1,9 @@
+###############################################################################
+#####                               Bug File                              #####
+###############################################################################
+
+* When a new IPv4 adress is set, connection is not reset.
+
+* If the connection can't be established, the GUI doesn't show.
+
+* Much of the buttons are not implemented XD (not really a bug ...).
