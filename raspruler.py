@@ -47,9 +47,9 @@ class MainWindow(gtk.Window):
         self.setStructuralInfo()
 
 
-    def initConnectionWithClient(self, server_ip):
+    def initConnectionWithClient(self):
         """ Try to set a connection with the RpBy server. """
-        self.client = RpBy.rasp_cln(server_ip)
+        self.client = RpBy.rasp_cln()
 
 
     def setStructuralInfo(self):
@@ -80,37 +80,11 @@ class MainWindow(gtk.Window):
 
         return item_factory.get_widget("<main>")
 
-
-    def analize_config_file(self, dict_config_file):
-        """ Check for data integrity from config_file. """
-
-        config_info = {}
-
-        if dict_config_file['server_ip_type'] == "static":
-            config_info["ip"] = dict_config_file['server_ip']
-        else:
-            pass
-
-        return config_info
-
-
-
-
-    def read_config_file(self):
-        """ Read the config file in order to get server ip and so on. """
-
-        self.configFile = CFM.ConfigFile()
-
-        return self.analize_config_file(self.configFile.parseConfigFile())
-
-
     
     def __init__(self):
         """ Painfully long creation of the GUI. Please don't cry blood. """
 
-        self.config_info = self.read_config_file()
-
-        self.initConnectionWithClient(self.config_info["ip"])
+        self.initConnectionWithClient()
 
         self.main_win = gtk.Window(gtk.WINDOW_TOPLEVEL)
         self.main_win.set_title("RaspRuler")   
@@ -201,7 +175,7 @@ class MainWindow(gtk.Window):
             # Ip label
 
         self.label_connection_ip_server_title = gtk.Label("Server IP:")
-        self.label_connection_ip_server_value = gtk.Label(self.config_info["ip"])
+        self.label_connection_ip_server_value = gtk.Label(self.client.config_info["server_ip"])
 
         self.table_connection_info.attach(self.label_connection_title, 0, 1, 0, 1, xoptions=gtk.FILL, yoptions=gtk.FILL, xpadding=6, ypadding=6)
         self.table_connection_info.attach(self.label_connection_value, 1, 2, 0, 1, xoptions=gtk.FILL, yoptions=gtk.FILL, xpadding=6, ypadding=6)
@@ -354,7 +328,7 @@ class MainWindow(gtk.Window):
         new_ip = self.entry_par_server_ip.get_text()
         is_ip_valid = K.isValidIPv4(new_ip)
         if is_ip_valid:
-            self.configFile.modifyParameter("server_ip", new_ip)
+            self.client.modifyConfigParameter("server_ip", new_ip)
         else:
             self.dialog_ip_adress_incorrect()
 

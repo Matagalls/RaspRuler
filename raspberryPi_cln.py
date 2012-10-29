@@ -29,6 +29,7 @@ import logging
 import sys
 
 import constants as K
+import config_file_manager as CFM
 
 COMMANDS = K.COMMANDS
 
@@ -37,10 +38,12 @@ TIMEOUT = 2
 
 class rasp_cln():
 
-    def __init__(self, server_ip):
+    def __init__(self):
 
         self.connection = False
-        self.server_ip = server_ip
+
+        self.config_file = CFM.ConfigFile()
+        self.config_info = self.readConfigFile()
 
         self.setConnection()
 
@@ -51,13 +54,47 @@ class rasp_cln():
         self.socket.close()  
 
 
+    def modifyConfigParameter(option, value):
+        """ Modify only one parameter of the config file """
+
+        self.config_file.modifyParameter(option, value)
+
+
+    def analizeConfigFile(self, dict_config_file):
+        """ Check for data integrity from config file. """
+
+        config_info = {}
+
+        if dict_config_file['server_ip_type'] == "static":
+            config_info["server_ip"] = dict_config_file['server_ip']
+        else:
+            pass
+
+        return config_info
+
+
+    def readConfigFile(self):
+        """ Read the config file in order to get server ip and so on. """
+        print self.analizeConfigFile(self.config_file.parseConfigFile())
+        return self.analizeConfigFile(self.config_file.parseConfigFile())
+
+
+    def resetConnection(self):
+        """ Reset the connection reading againg config file. """
+
+        if self.connecion:
+            self.socket.close()
+
+        
+        # set connection
+
     def setConnection(self):
         """ Create connection """
         self.socket = socket.socket()
         self.socket.settimeout(TIMEOUT)
         if self.connection is not True:
             try:
-                self.socket.connect((self.server_ip, K.PORT))
+                self.socket.connect((self.config_info["server_ip"], K.PORT))
                 self.connection = True
                 logging.debug("Connection established")
                 self.socket.settimeout(TIMEOUT)
