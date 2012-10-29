@@ -351,9 +351,10 @@ class MainWindow(gtk.Window):
             self.dialog_no_su_server()
 
     def apply_par_modifications(self, widget, data=None):
-        is_ip_valid = K.isValidIPv4(self.entry_par_server_ip.get_text())
+        new_ip = self.entry_par_server_ip.get_text()
+        is_ip_valid = K.isValidIPv4(new_ip)
         if is_ip_valid:
-            print "visca"
+            self.configFile.modifyParameter("server_ip", new_ip)
         else:
             self.dialog_ip_adress_incorrect()
 

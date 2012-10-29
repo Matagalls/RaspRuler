@@ -1,0 +1,3 @@
+# Configuration file of RaspRuler.
+server_ip_type=static
+server_ip=127.0.0.1
