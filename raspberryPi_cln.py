@@ -54,7 +54,7 @@ class rasp_cln():
         self.socket.close()  
 
 
-    def modifyConfigParameter(option, value):
+    def modifyConfigParameter(self, option, value):
         """ Modify only one parameter of the config file """
 
         self.config_file.modifyParameter(option, value)
@@ -75,18 +75,25 @@ class rasp_cln():
 
     def readConfigFile(self):
         """ Read the config file in order to get server ip and so on. """
-        print self.analizeConfigFile(self.config_file.parseConfigFile())
         return self.analizeConfigFile(self.config_file.parseConfigFile())
+
+    
+    def reloadConfigFile(self):
+        """ Read again config file. """
+        self.config_info = self.readConfigFile()
 
 
     def resetConnection(self):
         """ Reset the connection reading againg config file. """
 
-        if self.connecion:
+        if self.connection:
+            self.socket.send("quit")
             self.socket.close()
+            self.connection = False
 
+        self.reloadConfigFile()
+        self.setConnection()
         
-        # set connection
 
     def setConnection(self):
         """ Create connection """

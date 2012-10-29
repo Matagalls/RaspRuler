@@ -159,7 +159,7 @@ class MainWindow(gtk.Window):
 
         # Connection frame
 
-        self.frame_connection_info = gtk.Frame("Connection with the server")
+        self.frame_connection_info = gtk.Frame("Connection with server")
 
         self.table_connection_info = gtk.Table(2, 1, False)
 
@@ -329,6 +329,8 @@ class MainWindow(gtk.Window):
         is_ip_valid = K.isValidIPv4(new_ip)
         if is_ip_valid:
             self.client.modifyConfigParameter("server_ip", new_ip)
+            self.client.resetConnection()
+            self.updatAll()
         else:
             self.dialog_ip_adress_incorrect()
 
@@ -379,6 +381,17 @@ class MainWindow(gtk.Window):
         self.updateVariableInfo()
         return True
 
+
+    def updatAll(self):
+        """ Update all the labels that may been changed. """
+        # Label connected
+        if self.client.connection:
+            self.label_connection_value.set_text("Connected")
+        else:   
+            self.label_connection_value.set_text("Not Connected")
+        # Label server IP
+        self.label_connection_ip_server_value.set_text(self.client.config_info["server_ip"])
+        #self.main_win.show_all()  
 
 if __name__ == "__main__":
 
