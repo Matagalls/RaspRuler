@@ -30,6 +30,7 @@ import sys
 
 import constants as K
 import config_file_manager as CFM
+import service
 
 COMMANDS = K.COMMANDS
 
@@ -42,6 +43,7 @@ class rasp_cln():
 
         self.connection = False
 
+        self.services = list()
         self.config_file = CFM.ConfigFile()
         self.config_info = self.readConfigFile()
 
@@ -69,6 +71,13 @@ class rasp_cln():
             config_info["server_ip"] = dict_config_file['server_ip']
         else:
             pass
+
+        # process all the services
+        for key in dict_config_file.keys():
+            if key == "service":
+                name, name_process, web_interface, port = dict_config_file[key].split("%")
+                new_service = service.service(name, name_process, web_interface, port)
+                self.services.append(new_service)
 
         return config_info
 

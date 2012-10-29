@@ -325,12 +325,15 @@ class MainWindow(gtk.Window):
             self.dialog_no_su_server()
 
     def apply_par_modifications(self, widget, data=None):
+        # Modify IP, if needed
         new_ip = self.entry_par_server_ip.get_text()
         is_ip_valid = K.isValidIPv4(new_ip)
-        if is_ip_valid:
+        if is_ip_valid and new_ip != self.client.config_info["server_ip"]:
             self.client.modifyConfigParameter("server_ip", new_ip)
             self.client.resetConnection()
             self.updatAll()
+        elif new_ip == self.client.config_info["server_ip"]:
+            logging.info("Same IP; not applying changes")
         else:
             self.dialog_ip_adress_incorrect()
 
