@@ -27,6 +27,7 @@
 ###############################################################################
 
 import ast
+import re
 
 VERSION = "0.0.1"
 PORT = 3658
@@ -80,7 +81,12 @@ def strBoolean(bool_value):
         return "not_implemented"
 
 
-
+def isValidIPv4(ip_addr):
+    """Validates IPv4 addresses. """
+    if(re.match("(^[2][0-5][0-5]|^[1]{0,1}[0-9]{1,2})\.([0-2][0-5][0-5]|[1]{0,1}[0-9]{1,2})\.([0-2][0-5][0-5]|[1]{0,1}[0-9]{1,2})\.([0-2][0-5][0-5]|[1]{0,1}[0-9]{1,2})$",ip_addr)   != None):
+        return True
+    else:
+        return None
 
 
 

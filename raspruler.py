@@ -316,6 +316,7 @@ class MainWindow(gtk.Window):
         self.label_par_server_ip = gtk.Label("Server IP")
         self.entry_par_server_ip = gtk.Entry()
         self.button_apply_par_modifications = gtk.Button("Apply modifications")
+        self.button_apply_par_modifications.connect("clicked",self.apply_par_modifications)
 
         self.table_parameters.attach(self.label_par_server_ip, 0, 1, 0, 1, xoptions=gtk.FILL, yoptions=gtk.FILL, xpadding=6, ypadding=6)
         self.table_parameters.attach(self.entry_par_server_ip, 1, 2, 0, 1, xoptions=gtk.FILL, yoptions=gtk.FILL, xpadding=6, ypadding=6)
@@ -349,6 +350,13 @@ class MainWindow(gtk.Window):
         if answer == "no_superuser":
             self.dialog_no_su_server()
 
+    def apply_par_modifications(self, widget, data=None):
+        is_ip_valid = K.isValidIPv4(self.entry_par_server_ip.get_text())
+        if is_ip_valid:
+            print "visca"
+        else:
+            self.dialog_ip_adress_incorrect()
+
 ########## </Button attending Functions>
 
 ########## DialogMessage
@@ -357,6 +365,13 @@ class MainWindow(gtk.Window):
         md = gtk.MessageDialog(self, 
             gtk.DIALOG_DESTROY_WITH_PARENT, gtk.MESSAGE_WARNING, 
             gtk.BUTTONS_CLOSE, "Server hasn't superuser privilegies.")
+        md.run()
+        md.destroy()
+
+    def dialog_ip_adress_incorrect(self):
+        md = gtk.MessageDialog(self, 
+            gtk.DIALOG_DESTROY_WITH_PARENT, gtk.MESSAGE_WARNING, 
+            gtk.BUTTONS_CLOSE, "IPv4 incorrect.")
         md.run()
         md.destroy()
 
