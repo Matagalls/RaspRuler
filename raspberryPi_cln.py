@@ -54,6 +54,7 @@ class rasp_cln():
     def setConnection(self):
         """ Create connection """
         self.socket = socket.socket()
+        self.socket.settimeout(TIMEOUT)
         if self.connection is not True:
             try:
                 self.socket.connect((self.server_ip, K.PORT))

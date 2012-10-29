@@ -68,8 +68,6 @@ class ConfigFile:
             f.seek(0)
 
             for line in clean_old:
-                print line
-
                 if OPTION_CHAR in line and not COMMENT_CHAR in line:
                     option, value = line.split(OPTION_CHAR, 1)
                     option = option.strip()
@@ -81,7 +79,6 @@ class ConfigFile:
                 else:
                     f.write(line + "\n")
         f.close()
-
 
 
     def parseConfigFile(self):

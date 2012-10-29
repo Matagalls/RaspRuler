@@ -387,17 +387,17 @@ class MainWindow(gtk.Window):
 
     def updateVariableInfo(self):
         """ Update all the variable info. """
+        if self.client.connection:
+            def createStringWithPercents(value1, total):
+                """ Return a string with 2 values and the percent. """
+                return K.memoryResizer(value1) + " of " + K.memoryResizer(total)\
+                         + " used (" + str(100*int(value1)/int(total)) + "%)" 
 
-        def createStringWithPercents(value1, total):
-            """ Return a string with 2 values and the percent. """
-            return K.memoryResizer(value1) + " of " + K.memoryResizer(total)\
-                     + " used (" + str(100*int(value1)/int(total)) + "%)" 
 
+            dict_info = self.client.updateVariableInfo()
 
-        dict_info = self.client.updateVariableInfo()
-
-        string = createStringWithPercents(dict_info["ram_used"],self.dict_struct_info["ram_total"])
-        self.label_ram_total_and_used.set_text(string)
+            string = createStringWithPercents(dict_info["ram_used"],self.dict_struct_info["ram_total"])
+            self.label_ram_total_and_used.set_text(string)
 
 
     def timedFunctions(self):
