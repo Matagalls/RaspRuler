@@ -62,10 +62,10 @@ class MainWindow(gtk.Window):
             self.label_cpu_value.set_text(self.dict_struct_info["cpu"])
             self.label_ram_value.set_text(K.memoryResizer(self.dict_struct_info["ram_total"]))
 
-            self.label_amule_installed.set_text(K.strBoolean(self.dict_struct_info["amule_installed"]))
-            self.label_torrent_installed.set_text(K.strBoolean(self.dict_struct_info["torrent_installed"]))
-            self.label_git_installed.set_text(K.strBoolean(self.dict_struct_info["git_installed"]))
-            self.label_owncloud_installed.set_text(K.strBoolean(self.dict_struct_info["owncloud_installed"]))
+  #          self.label_amule_installed.set_text(K.strBoolean(self.dict_struct_info["amule_installed"]))
+  #          self.label_torrent_installed.set_text(K.strBoolean(self.dict_struct_info["torrent_installed"]))
+  #          self.label_git_installed.set_text(K.strBoolean(self.dict_struct_info["git_installed"]))
+  #          self.label_owncloud_installed.set_text(K.strBoolean(self.dict_struct_info["owncloud_installed"]))
 
 
     def get_main_menu(self, window):
@@ -89,7 +89,7 @@ class MainWindow(gtk.Window):
         self.main_win = gtk.Window(gtk.WINDOW_TOPLEVEL)
         self.main_win.set_title("RaspRuler")   
         self.main_win.set_position(gtk.WIN_POS_CENTER)
-        self.main_win.set_size_request(640, 400)     
+        self.main_win.set_size_request(640, 500)     
         self.main_win.connect("destroy", self.on_quit)
         self.main_win.set_border_width(10)
         
@@ -202,53 +202,45 @@ class MainWindow(gtk.Window):
 
         ##### Slide page about services
         self.frame_services = gtk.Frame("Services overview")
-        self.table_services = gtk.Table(4, 4, False)
 
-        # Amule
-        self.label_amule_title = gtk.Label("Amule")
-        self.label_amule_installed = gtk.Label(EMPTY)
-        self.label_amule_running = gtk.Label(EMPTY)
-        self.button_amule_launch_website = gtk.Button("Launch Website")
-
-        self.table_services.attach(self.label_amule_title,           0, 1, 0, 1, xoptions=gtk.FILL, yoptions=gtk.FILL, xpadding=6, ypadding=6)
-        self.table_services.attach(self.label_amule_installed,       1, 2, 0, 1, xoptions=gtk.FILL, yoptions=gtk.FILL, xpadding=6, ypadding=6)
-        self.table_services.attach(self.label_amule_running,         2, 3, 0, 1, xoptions=gtk.FILL, yoptions=gtk.FILL, xpadding=6, ypadding=6)
-        self.table_services.attach(self.button_amule_launch_website, 3, 4, 0, 1, xoptions=gtk.FILL, yoptions=gtk.FILL, xpadding=6, ypadding=6)
-
-        # Torrent
-        self.label_torrent_title = gtk.Label("uTorrent")
-        self.label_torrent_installed = gtk.Label(EMPTY)
-        self.label_torrent_running = gtk.Label(EMPTY)
-        self.button_torrent_launch_website = gtk.Button("Launch Website")
-
-        self.table_services.attach(self.label_torrent_title,           0, 1, 1, 2, xoptions=gtk.FILL, yoptions=gtk.FILL, xpadding=6, ypadding=6)
-        self.table_services.attach(self.label_torrent_installed,       1, 2, 1, 2, xoptions=gtk.FILL, yoptions=gtk.FILL, xpadding=6, ypadding=6)
-        self.table_services.attach(self.label_torrent_running,         2, 3, 1, 2, xoptions=gtk.FILL, yoptions=gtk.FILL, xpadding=6, ypadding=6)
-        self.table_services.attach(self.button_torrent_launch_website, 3, 4, 1, 2, xoptions=gtk.FILL, yoptions=gtk.FILL, xpadding=6, ypadding=6)
-
-        # apache / owncloud
-        self.label_owncloud_title = gtk.Label("owncloud")
-        self.label_owncloud_installed = gtk.Label(EMPTY)
-        self.label_owncloud_running = gtk.Label(EMPTY)
-        self.button_owncloud_launch_website = gtk.Button("Launch Website")
-
-        self.table_services.attach(self.label_owncloud_title,           0, 1, 2, 3, xoptions=gtk.FILL, yoptions=gtk.FILL, xpadding=6, ypadding=6)
-        self.table_services.attach(self.label_owncloud_installed,       1, 2, 2, 3, xoptions=gtk.FILL, yoptions=gtk.FILL, xpadding=6, ypadding=6)
-        self.table_services.attach(self.label_owncloud_running,         2, 3, 2, 3, xoptions=gtk.FILL, yoptions=gtk.FILL, xpadding=6, ypadding=6)
-        self.table_services.attach(self.button_owncloud_launch_website, 3, 4, 2, 3, xoptions=gtk.FILL, yoptions=gtk.FILL, xpadding=6, ypadding=6)
-
-        # git
-        self.label_git_title = gtk.Label("git")
-        self.label_git_installed = gtk.Label(EMPTY)
-
-        self.table_services.attach(self.label_git_title,           0, 1, 3, 4, xoptions=gtk.FILL, yoptions=gtk.FILL, xpadding=6, ypadding=6)
-        self.table_services.attach(self.label_git_installed,       1, 2, 3, 4, xoptions=gtk.FILL, yoptions=gtk.FILL, xpadding=6, ypadding=6)
-
+        self.createServicesTable()
 
         self.frame_services.add(self.table_services)
 
+#        self.label_title_slide_services = gtk.Label("Services")
+#        self.notebook.append_page(self.frame_services, self.label_title_slide_services)
+
+        # Add new service
+
+        self.frame_add_service = gtk.Frame("Add service")
+        self.table_add_service = gtk.Table(2, 5, False)
+        self.label_new_service_name = gtk.Label("New service name:")
+        self.label_new_service_daemon_name = gtk.Label("New service daemon name:")
+        self.label_new_service_port = gtk.Label("New service port:")
+        self.button_add_new_service = gtk.Button("Add new service")
+        self.entry_new_service_daemon_name = gtk.Entry()
+        self.entry_new_service_name = gtk.Entry()
+        self.entry_new_port_name = gtk.Entry()
+
+        self.table_add_service.attach(self.label_new_service_name, 0, 1, 0, 1, xoptions=gtk.FILL, yoptions=gtk.FILL, xpadding=6, ypadding=6)
+        self.table_add_service.attach(self.entry_new_service_name, 1, 2, 0, 1, xoptions=gtk.FILL, yoptions=gtk.FILL, xpadding=6, ypadding=6)
+        self.table_add_service.attach(self.label_new_service_port, 0, 1, 1, 2, xoptions=gtk.FILL, yoptions=gtk.FILL, xpadding=6, ypadding=6)
+        self.table_add_service.attach(self.entry_new_port_name, 1, 2, 1, 2, xoptions=gtk.FILL, yoptions=gtk.FILL, xpadding=6, ypadding=6)
+        self.table_add_service.attach(self.label_new_service_daemon_name, 0, 1, 2, 3, xoptions=gtk.FILL, yoptions=gtk.FILL, xpadding=6, ypadding=6)
+        self.table_add_service.attach(self.entry_new_service_daemon_name, 1, 2, 2, 3, xoptions=gtk.FILL, yoptions=gtk.FILL, xpadding=6, ypadding=6)
+        self.table_add_service.attach(self.button_add_new_service, 1, 2, 3, 4, xoptions=gtk.FILL, yoptions=gtk.FILL, xpadding=6, ypadding=6)
+
+        self.frame_add_service.add(self.table_add_service)
+
+        self.vbox_services = gtk.VBox(gtk.FALSE, 1)
+        self.vbox_services.set_border_width(1)
+
+        self.vbox_services.pack_start(self.frame_services)
+        self.vbox_services.pack_start(self.frame_add_service)
+
+
         self.label_title_slide_services = gtk.Label("Services")
-        self.notebook.append_page(self.frame_services, self.label_title_slide_services)
+        self.notebook.append_page(self.vbox_services, self.label_title_slide_services)
 
 
         ##### Slide about resources
@@ -309,6 +301,45 @@ class MainWindow(gtk.Window):
 
         ##### Add timer
         gobject.timeout_add_seconds(5, self.timedFunctions)
+
+    
+    def createServicesTable(self):
+        """ Generate a table from the services read in the config file. """
+
+        self.table_services = gtk.Table(5, len(self.client.services) + 1, False)
+
+        # Add menu in the top of the table
+        self.label_top_table_name = gtk.Label("Name")
+        self.label_top_table_working = gtk.Label("Working")
+        self.label_top_table_onoff = gtk.Label("ON/OFF")
+        self.label_top_table_website = gtk.Label("Launch Website")
+        self.label_top_table_edit = gtk.Label("Edit")
+        self.table_services.attach(self.label_top_table_name, 0, 1, 0, 1, xoptions=gtk.FILL, yoptions=gtk.FILL, xpadding=6, ypadding=6)
+        self.table_services.attach(self.label_top_table_working, 1, 2, 0, 1, xoptions=gtk.FILL, yoptions=gtk.FILL, xpadding=6, ypadding=6)
+        self.table_services.attach(self.label_top_table_onoff, 2, 3, 0, 1, xoptions=gtk.FILL, yoptions=gtk.FILL, xpadding=6, ypadding=6)
+        self.table_services.attach(self.label_top_table_website, 3, 4, 0, 1, xoptions=gtk.FILL, yoptions=gtk.FILL, xpadding=6, ypadding=6)
+        self.table_services.attach(self.label_top_table_edit, 4, 5, 0, 1, xoptions=gtk.FILL, yoptions=gtk.FILL, xpadding=6, ypadding=6)
+
+        i = 1
+        self.list_services = list()
+        for service in self.client.services:
+            row = list()
+            row.append(gtk.Label(service.name))
+            row.append(gtk.Label())
+            row.append(gtk.Button("Start/Stop"))
+            if service.web_interface:
+                row.append(gtk.Button("Launch Website"))
+            row.append(gtk.Button("Edit"))
+
+
+
+            self.list_services.append(row)
+
+            self.table_services.attach(row[0], 0, 1, 0+i, 1+i, xoptions=gtk.FILL, yoptions=gtk.FILL, xpadding=6, ypadding=6)
+            self.table_services.attach(row[1], 1, 2, 0+i, 1+i, xoptions=gtk.FILL, yoptions=gtk.FILL, xpadding=6, ypadding=6)
+            self.table_services.attach(row[2], 2, 3, 0+i, 1+i, xoptions=gtk.FILL, yoptions=gtk.FILL, xpadding=6, ypadding=6)
+            self.table_services.attach(row[3], 3, 4, 0+i, 1+i, xoptions=gtk.FILL, yoptions=gtk.FILL, xpadding=6, ypadding=6)
+            self.table_services.attach(row[4], 4, 5, 0+i, 1+i, xoptions=gtk.FILL, yoptions=gtk.FILL, xpadding=6, ypadding=6)
 
 
 

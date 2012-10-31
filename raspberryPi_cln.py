@@ -30,7 +30,7 @@ import sys
 
 import constants as K
 import config_file_manager as CFM
-import service
+import classes
 
 COMMANDS = K.COMMANDS
 
@@ -76,7 +76,7 @@ class rasp_cln():
         for key in dict_config_file.keys():
             if key == "service":
                 name, name_process, web_interface, port = dict_config_file[key].split("%")
-                new_service = service.service(name, name_process, web_interface, port)
+                new_service = classes.service(name, name_process, web_interface, port)
                 self.services.append(new_service)
 
         return config_info
