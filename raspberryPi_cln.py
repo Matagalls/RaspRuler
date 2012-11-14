@@ -113,7 +113,8 @@ class rasp_cln():
                 self.socket.connect((self.config_info["server_ip"], K.PORT))
                 self.connection = True
                 logging.debug("Connection established")
-                self.socket.settimeout(TIMEOUT)
+                #self.socket.settimeout(TIMEOUT)
+                self.socket.settimeout(None)
             except:
                 self.connection = False
                 logging.warning("Can't found server. Connection not established")
@@ -129,6 +130,7 @@ class rasp_cln():
         if self.connection:
             dict_info = self.senderAndReciverManager("get_structural_info")
             if dict_info is not False:
+                print dict_info
                 return dict_info
             else:
                 return False

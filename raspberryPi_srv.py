@@ -34,6 +34,7 @@ import constants as K
 
 VERSION = "0.0.1"
 MAX_USERS = 1
+DIRECCIO_IP = "192.168.1.101"
 
 COMMANDS = K.COMMANDS
 
@@ -69,11 +70,11 @@ class rasp_srv():
 
     def wait(self):
 
-        while 1:
+        while 1: # Bucle many clients
 
             self.auxSocket = socket.socket()
             self.auxSocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-            self.auxSocket.bind(("localhost", K.PORT))
+            self.auxSocket.bind((DIRECCIO_IP, K.PORT))
             logging.info('Waiting for clinets to connect ...')
             self.auxSocket.listen(MAX_USERS)
 
@@ -83,7 +84,7 @@ class rasp_srv():
             logging.info('Client from %s connected and accepted.', self.clientAddress)
 
             socket_alive = True
-            while socket_alive:
+            while socket_alive: # Bucle many commands in one client
                 command = self.socketClient.recv(1000)
                 if command in COMMANDS:
 
@@ -98,14 +99,9 @@ class rasp_srv():
                         self.getVariableInfo()
                         answer = K.serializeDict(self.variable_info)
                     
-                    elif command == "halt":
-                        answer = self.halt()
+                    elif command == "halt" or command == "reboot" or command == "quit":
+                        break
 
-                    elif command == "reboot":
-                        answer = self.reboot()
-
-                    elif command == "quit":
-                        break 
                     logging.info('Asked for %s command', command)
 
                 else:
@@ -118,9 +114,18 @@ class rasp_srv():
                     logging.warning('Socket died')
                     socket_alive = False               
 
+            # Breaking connection
             logging.info('Closing sockets with %s', self.clientAddress)
             self.socketClient.close()
             self.auxSocket.close()
+
+            if command == "halt":
+                answer = self.halt()
+                logging.info('Halting system ...')
+            elif command == "reboot":
+                answer = self.reboot()
+                logging.info('Rebooting system ...')
+            break # Break the first "while 1"
 
 
     def getRamInfo(self):

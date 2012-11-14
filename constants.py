@@ -52,22 +52,24 @@ def unserializeDict(string):
 
 def memoryResizer(memory):
     """ Adjust memory size in the correct units. Memory parameter in Kbyts. """
-
-    memory = int(memory)
-    if memory / 1024 > 1:
-        memory_int = memory / 1024
-        memory_dec = memory % 1024
-        units = "Mb"
-        if memory_int / 1024 > 1:
-            memory = memory_int
+    if memory is not "":
+        memory = int(memory)
+        if memory / 1024 > 1:
             memory_int = memory / 1024
             memory_dec = memory % 1024
-            units = "Gb"
+            units = "Mb"
+            if memory_int / 1024 > 1:
+                memory = memory_int
+                memory_int = memory / 1024
+                memory_dec = memory % 1024
+                units = "Gb"
 
+        else:
+            units = "Kb"
+
+        return str(memory_int) + "." + str(memory_dec)[:2] + " " + units
     else:
-        units = "Kb"
-
-    return str(memory_int) + "." + str(memory_dec)[:2] + " " + units
+        return (" ")
 
 
 def strBoolean(bool_value):

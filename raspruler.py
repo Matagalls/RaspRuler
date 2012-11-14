@@ -412,7 +412,7 @@ class MainWindow(gtk.Window):
 
     def timedFunctions(self):
         """ Bundle all the timed functions. """
-        self.updateVariableInfo()
+        #self.updateVariableInfo()
         return True
 
 
