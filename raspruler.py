@@ -410,9 +410,17 @@ class MainWindow(gtk.Window):
             self.label_ram_total_and_used.set_text(string)
 
 
+    def checkConnection(self):
+        """ Function who check the connection by sending and echo command. """
+        answer = self.client.senderAndReciverManager("hi")
+        if answer != "whatsup":
+            print "no connecció"
+
+
     def timedFunctions(self):
         """ Bundle all the timed functions. """
         #self.updateVariableInfo()
+        self.checkConnection()
         return True
 
 
