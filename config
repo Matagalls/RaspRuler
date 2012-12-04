@@ -1,6 +1,6 @@
 # Configuration file of RaspRuler.
 server_ip_type=static
-server_ip=192.168.1.101
+server_ip=127.0.0.1
 service=amule%amule-daemon%YES%4711
 service=transmission%transmission-daemon%YES%9091
 backup=local%/home/alex%rasp_srv%/home/pi

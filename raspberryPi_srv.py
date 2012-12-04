@@ -34,7 +34,8 @@ import constants as K
 
 VERSION = "0.0.1"
 MAX_USERS = 1
-DIRECCIO_IP = "192.168.1.101"
+#DIRECCIO_IP = "192.168.1.101"
+DIRECCIO_IP = "localhost"
 
 COMMANDS = K.COMMANDS
 
@@ -87,7 +88,6 @@ class rasp_srv():
             while socket_alive: # Bucle many commands in one client
                 command = self.socketClient.recv(1000)
                 if command in COMMANDS:
-
                     if command == "free_space_disk":
                         answer = self.getFreeHdSpace()
 
@@ -104,9 +104,12 @@ class rasp_srv():
 
                     logging.info('Asked for %s command', command)
 
+                elif command == "":
+                    logging.warning('Recibed empty command. Ignoring')
+
                 else:
                     answer = "Unknown_command"
-                    logging.warning('Recived unknown command: %s. Ingnoring', command)
+                    logging.warning('Recived unknown command: "%s". Ingnoring', command)
 
                 try:
                     self.socketClient.send(answer)
@@ -122,10 +125,11 @@ class rasp_srv():
             if command == "halt":
                 answer = self.halt()
                 logging.info('Halting system ...')
+                break # Break the first "while 1"
             elif command == "reboot":
                 answer = self.reboot()
                 logging.info('Rebooting system ...')
-            break # Break the first "while 1"
+                break # Break the first "while 1"
 
 
     def getRamInfo(self):

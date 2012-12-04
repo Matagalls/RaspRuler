@@ -27,6 +27,7 @@
 import socket
 import logging
 import sys
+import time
 
 import constants as K
 import config_file_manager as CFM
@@ -47,13 +48,13 @@ class rasp_cln():
         self.config_file = CFM.ConfigFile()
         self.config_info = self.readConfigFile()
 
-        self.setConnection()
-
 
     def closeConnection(self):
         logging.debug("Closing connection")
         self.socket.send("quit")
         self.socket.close()  
+        self.connection = False
+        time.sleep(1) # Wait 1 second to avoid a too much fast reconnection.
 
 
     def modifyConfigParameter(self, option, value):
@@ -106,9 +107,9 @@ class rasp_cln():
 
     def setConnection(self):
         """ Create connection """
-        self.socket = socket.socket()
-        self.socket.settimeout(TIMEOUT)
         if self.connection is not True:
+            self.socket = socket.socket()
+            self.socket.settimeout(TIMEOUT)
             try:
                 self.socket.connect((self.config_info["server_ip"], K.PORT))
                 self.connection = True
@@ -117,11 +118,12 @@ class rasp_cln():
                 self.socket.settimeout(None)
             except:
                 self.connection = False
-                logging.warning("Can't found server. Connection not established")
+                logging.warning("Can't found " + self.config_info["server_ip"] \
+                     + ". Connection not established")
                 self.socket.close()
 
         else:
-            logging.info("Connection already set. Ignoring ... ")
+            logging.warning("Connection already set. Ignoring ... ")
 
     
     def getStruturalInfo(self):
