@@ -90,6 +90,7 @@ class rasp_cln():
     
     def reloadConfigFile(self):
         """ Read again config file. """
+        logging.info("Reloading Configuration File")
         self.config_info = self.readConfigFile()
 
 
@@ -97,12 +98,15 @@ class rasp_cln():
         """ Reset the connection reading againg config file. """
 
         if self.connection:
-            self.socket.send("quit")
-            self.socket.close()
-            self.connection = False
+            logging.info("Reseting connection")
+            self.closeConnection()
+            self.reloadConfigFile()
+            self.setConnection()
 
-        self.reloadConfigFile()
-        self.setConnection()
+        else:
+            logging.info("Connection wasn't set during reset. Setting ...")
+            self.reloadConfigFile()
+            self.setConnection()
         
 
     def setConnection(self):
