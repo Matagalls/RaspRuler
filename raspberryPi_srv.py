@@ -88,6 +88,10 @@ class rasp_srv():
             while socket_alive: # Bucle many commands in one client
                 command = self.socketClient.recv(1000)
                 if command in COMMANDS:
+
+                    if command == "hi":
+                        answer = "whatsup"
+
                     if command == "free_space_disk":
                         answer = self.getFreeHdSpace()
 

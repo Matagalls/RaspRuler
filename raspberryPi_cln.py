@@ -51,7 +51,7 @@ class rasp_cln():
 
     def closeConnection(self):
         logging.debug("Closing connection")
-        self.socket.send("quit")
+        self.senderAndReciverManager("quit")
         self.socket.close()  
         self.connection = False
         time.sleep(1) # Wait 1 second to avoid a too much fast reconnection.
@@ -86,6 +86,16 @@ class rasp_cln():
     def readConfigFile(self):
         """ Read the config file in order to get server ip and so on. """
         return self.analizeConfigFile(self.config_file.parseConfigFile())
+
+
+    def checkConnection(self):
+        """ Send and recive one special command just to check the connection.
+            Return 'True' if it's on and 'False' if it's off. """
+
+        if self.senderAndReciverManager("hi") != False:
+            return True
+        else:
+            return False
 
     
     def reloadConfigFile(self):
@@ -153,21 +163,26 @@ class rasp_cln():
 
         if self.connection:
             if command in COMMANDS:
-                self.socket.send(command)
-                answer = self.socket.recv(1000)
 
-                if answer is not None:
-                    if answer == K.UNKNOWN_COMMAND:
-                        logging.warning("Server can't understant last command: %s", command)
-                        return False
-                    else:
-                        if command == "get_structural_info" or command == "update_variable_info":
-                            return K.unserializeDict(answer)
-                        else:
-                            return answer
+                if command == "quit":
+                    # Doesn't wait answer in quit command
+                    self.socket.send(command)
                 else:
-                    logging.warning("Recived empty answer from command: %s", command)
-                    return False
+                    self.socket.send(command)
+                    answer = self.socket.recv(1000)
+
+                    if answer is not None:
+                        if answer == K.UNKNOWN_COMMAND:
+                            logging.warning("Server can't understant last command: %s", command)
+                            return False
+                        else:
+                            if command == "get_structural_info" or command == "update_variable_info":
+                                return K.unserializeDict(answer)
+                            else:
+                                return answer
+                    else:
+                        logging.warning("Recived empty answer from command: %s", command)
+                        return False
             else:
                 logging.warning('Not sending unknown command: %s. Ingnoring', command)
                 return False
